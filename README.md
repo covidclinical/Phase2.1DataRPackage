@@ -6,7 +6,7 @@ This repository contains R utility functions for Phase 2 Data Pre-Processing for
 To install this package in R:
 
 ``` R
-devtools::install_github("https://github.com/ChuanHong/Phase2DataRPackage", subdir="FourCePhase2Data", upgrade=FALSE)
+devtools::install_github("https://github.com/covidclinical/Phase2DataRPackage", subdir="FourCePhase2Data", upgrade=FALSE)
 ```
 
 # 4CE Phase 2 Data Pre-Processing Overview
