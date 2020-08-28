@@ -1,5 +1,5 @@
 # Phase2DataRPackage
-This repository contains R utility functions for 4CE Phase 2 Data Pre-Processing.
+This repository contains R utility functions for Phase 2 Data Pre-Processing for the 4CE Consortium.
 
 # Installation
 
@@ -11,76 +11,113 @@ devtools::install_github("https://github.com/ChuanHong/Phase2DataRPackage", subd
 
 # 4CE Phase 2 Data Pre-Processing Overview
 
-Every 4CE consortium Phase 2 project will be associated with 3 separate GitHub repositories.  One will contain the R code to implement the analysis,
-and two will be used to store and organize the results from the analyses.  The repositories will be named according to this convention:
-
-`Phase2[PROJECT_NAME]RPackage`: the repository that will contain the R code to run the project's analytics
-
-`Phase2[PROJECT_NAME]ResultsPerSite`: the repository where site-level data will be submitted
-
-`Phase2[PROJECT_NAME]AggregateResultsPerCountry`: the repository where country-level data will be stored
+The Phase 2 Data Pre-Processing is recommended for all sites before running the 4CE consortium Phase 2 project. The Phase 2 Data Pre-Processing consists of two parts: quality control and data cleaning. 
 
 
 ## Quality Control for Phase 2 Data
 
-The R library (`FourCePhase2Data`) in this repository contains functions that compare conduct quality control for the Phase 2 Data: comparing the summary statistics obtained from patient level Phase 2 data and the aggregated data from from Phase1.1.
+The R library (`FourCePhase2Data`) in this repository contains functions that conduct quality control for the Phase 2 Data: 
+1. **QC for Phase 2 patient-level data**. We will check if the summary statistics obtained from Phase 2 patient-level data is consistent with the aggreated results generated for Phase1.1.
+2. **QC for Phase 2 summary statistics**. We will check the following critera: 
++ Demographics:  
+  + if there is missing demographic groups (e.g., missing age group); 
+  + if there is negative patient numbres or counts; 
+  + if there is number of all patients less than the number of severe patients. 
++ Medications and Diagnoses:
+  + if there is any code not belong to the list of medclass or ICD10; 
+  + if there is negative patient numbers or counts; 
+  + if the number of all patients is greater than the number of severe patients.
++ Labs: 
+  + if there is any labs not belong to the list of loinc codes;
+  + if there is negative patients nubmers; 
+  + if there is negative measures in the original scale.
++ Cross over comparison: 
+  + if the number of patients in DailyCounts, ClincalCourse, and Demographic are consistent; 
+  + if the number of severe patients in DailyCounts, ClinialCourse, and Demographic are consistent;
+  + if in any of Medications, Diagnoses or Labs, the number of patients with the code is greater than number of all patients. 
++ Lab units: check if the lab measures are consistently outside the confidence range.
+3. **Generate QC report**
+A QC report will be generated in word format. 
 
-To get started, run the Docker container (https://github.com/covidclinical/Phase2.0_Docker_Analysis).
+
+## Data Cleaning for Phase 2 Data
+
+The R library (`FourCePhase2Data`) in this repository also contains functions for data clean, which generates data in specific formats to fit into different analyses:  
+1. **Longitudinal data for Labs**: days since admission 
+2. **Longitudinal data for Medications**: before and since admission 
+3. **Longitudinal data for Diagnoses**: before and since admission 
+4. **Baseline covariates**: demographic variables, lab measures at day 0, medications and diagnoses before admission. 
+5. **Time varying covariates**: to be added
+6. **Event time data**: for each event outcome (severe, deceased, and severe AND deceased), we derive observed event time, and the indicator of obsering the event. 
+
+# Get Started
+
+1. Run the Docker container and launch the localhost Rstudio. The details can be found in (https://github.com/covidclinical/Phase2.0_Docker_Analysis).
 
 
-The latest versions of the 4CE Docker container come pre-configured with this R library installed. To ensure that you have the latest version of this software, however, you should run the following in your R session in the container before proceeding:
+2. Install and load the R package:
 
 ``` R
-devtools::install_github("https://github.com/covidclinical/Phase2UtilitiesRPackage", subdir="FourCePhase2Utilities", upgrade=FALSE)
+devtools::install_github("https://github.com/covidclinical/Phase2DataRPackage", subdir="FourCePhase2Data", upgrade=FALSE)
+library(FourCePhase2Data)
+```
+3. Set the working, input and output directories. In my example, I set the working directory to "/4ceData/RDevelopment", and specified "Input/" and "Output/". The users can specify different directories as needed. The input.dir should be where you save the Phase 2 patient level data and Phase 2 summary data, and the output dir will be the destination of the QC report and cleaned data. 
+
+``` R
+setwd("/4ceData/RDevelopment")
+input.dir = "Input/" 
+output.dir = "Output/" 
 ```
 
-In order to perform the following steps you **must** have been granted permission to create repositories under the [covidclinical GitHub organization](https://github.com/covidclinical).  Only members of the 4CE consortium will be granted this permission, and they should request it through the [phase-2 4CE slack channel](https://covidclinical.slack.com/archives/C012UTRHJCR).
-
-In the rest of this example, we will create a new project called "MyAnalysis". This example is for illustrative purposes only.
-You should replace "MyAnalysis" with the name of the project that you are creating before running the code.
-
-After having installed the `FourCePhase2Utilities` R library (see above), in your command-line R session
-you can begin the process of creating the repositories for the "MyAnalysis" project with the following command
-(you will be prompted for your GitHub username and password **6 times** as the
-repositories are created and pre-populated):
-
-```
-FourCePhase2Utilities::createProject("MyAnalysis")
-```
-
-This `createProject(...)` function call will generate all of the repositories required to support a 4CE Phase 2 project.  By default,
-the local copies of these repositories are created under `/RDevelopment/` in the container. You can provide an alternative location by specifying the `workingDirectory` argument to `createProject(...)`.
-
-You would now modify `runAnalysis()`, `validateAnalysis()`, `submitAnalysis()` inside of the
-`Phase2MyAnalysisRPackage` repository.  Note that the R package lives in a subdirectory
-of the repository named `FourCePhase2[PROJECT_NAME]` (`FourCePhase2MyAnalysis` in our example). The `README.md` for your package comes pre-populated with example code to install your package in R from this subdirectory.  You can add as much additional supporting code as you would like
-to your package in additional files, or in the files for these three functions.  For more information on developing R packages in general, see http://r-pkgs.had.co.nz
-
-The R package that was generated by `createProject(...)` contains two functions, `getSiteDataRepositoryUrl()` and `getAggregateCountryDataRepositoryUrl()` that return respectively the GitHub URLs of the repositories for the site and country level data for your project.  These may be useful when writing validation and submission code.
-
-To help other consortium members understand and run your code, please include well-thought-out comments and documentation.  Please see http://r-pkgs.had.co.nz/man.html for information on documenting packages and functions using Roxygen.
-
-Once you are done developing your code, generate documentation using the devtools (Roxygen) package,
-with the R working directory set to the package's directory. You don't need to run this in the same R
-session as above, in fact, the remainder of this code works fine in RStudio.
-
-Note that we are running this **inside the R package directory within the git repository**:
+4. Read in the Phase 2 patient level data, and Phase 2 summary data. 
+``` R
+phase2.cc=read.csv(paste0(input.dir, "Phase2LocalPatientClinicalCourse.csv"))
+phase2.po=read.csv(paste0(input.dir, "Phase2LocalPatientObservations.csv"))
+phase2.ps=read.csv(paste0(input.dir, "Phase2LocalPatientSummary.csv"))
+phase1.lab=read.csv(paste0(input.dir, "Phase2Labs.csv"))
+phase1.med=read.csv(paste0(input.dir, "Phase2Medications.csv"))
+phase1.diag=read.csv(paste0(input.dir, "Phase2Diagnoses.csv"))
+phase1.dem=read.csv(paste0(input.dir, "Phase2Demographics.csv"))
+phase1.dc=read.csv(paste0(input.dir, "Phase2DailyCounts.csv"))
+phase1.cc=read.csv(paste0(input.dir, "Phase2ClinicalCourse.csv"))
 
 ```
-setwd("/RDevelopment/Phase2MyAnalysisRPackage/FourCePhase2MyAnalysis")
-devtools::document()
+
+5. Conduct QC. 
+``` R
+Phase2QC_Tab_Labs=runQC_tab_lab(phase2.cc, phase2.po, phase1.lab, output.dir)
+Phase2QC_Tab_Medications=runQC_tab_med(phase2.cc, phase2.po, phase1.med, output.dir)
+Phase2QC_Tab_Diagnoses=runQC_tab_diag(phase2.cc, phase2.po, phase1.diag, output.dir)
+Phase2QC_Tab_Demographic=runQC_tab_dem(phase2.ps, phase2.po, phase1.dem, output.dir)
+Phase2QC_Tab_ClinicalCourse=runQC_tab_cc(phase2.cc, phase1.cc, output.dir)
+runQC_report(phase1.dc,phase1.cc, phase1.dem,phase1.diag, phase1.lab, phase1.med, output.dir,site.nm="MGB")
+```
+**If there is any issue identified in Step 5, please fix the issue first before going to Step 6.**
+
+6. Data Cleaning.
+``` R
+Phase2Data_Labs_Longitudinal=runData_Labs_Longitudinal(phase2.po, output.dir)
+Phase2Data_Medications_Longitudinal=runData_Medications_Longitudinal(phase2.po, output.dir)
+Phase2Data_Diagnoses_Longitudinal=runData_Diagnoses_Longitudinal(phase2.po, output.dir)
+Phase2Data_Covariates_Baseline=runData_Covariates_Baseline(phase2.cc, phase2.po, phase2.ps, output.dir)
+Phase2Data_EventTime=runData_EventTime(phase2.cc, output.dir)
 ```
 
-The R package for your project is now ready to push to GitHub to become available to run at the 4CE sites, and you can do so using your
-tool of choice for working with git.  Since the local copies are stored on the docker host's
-storage (if you ran the container with a `-v` option specifying a host file system location, and used that location when calling `createProject(...)`), this can either be done inside the container, or in the host environemt.  If working
-in the host environment, you would need to adjust file locations appropriately.
+7. If all the above steps have worked correctly, you should be able to see the following files in the output directory:
+
++ Phase2QC_Tab_ClinicalCourse.csv
++ Phase2QC_Tab_Demographics.csv
++ Phase2QC_Tab_Diagnosees.csv
++ Phase2QC_Tab_Labs.csv
++ Phase2QC_Tab_Medications.csv
++ Phase2QC_Report.doc
+
++ Phase2Data_Labs_Longitudinal.csv
++ Phase2Data_Medications_Longitudinal.csv
++ Phase2Data_Diagnoses_Longitudinal.csv
++ Phase2Data_Covariates_Baseline.csv
++ Phase2Data_EventTime.csv
 
 
-If all of this has worked correctly, you should be able to see the following files in the output directory:
 
-<pre>https://github.com/covidclinical/Phase2[PROJECT_NAME]]RPackage</pre>
 
-(https://github.com/covidclinical/Phase2MyAnalysisRPackage in our example)
-
-and see the modifications that you pushed.  You can install your package using the code displayed on the README (main) page for the repository, e.g.:
