@@ -11,10 +11,10 @@ devtools::install_github("https://github.com/covidclinical/Phase2DataRPackage", 
 
 # 4CE Phase 2 Data Pre-Processing Overview
 
-The Phase 2 Data Pre-Processing is recommended for all sites before running the 4CE consortium Phase 2 project. The Phase 2 Data Pre-Processing consists of two parts: quality control and data cleaning. 
+The Phase 2 Data Pre-Processing is recommended for all sites before running the 4CE consortium Phase 2 project. The Phase 2 Data Pre-Processing consists of two parts: quality control and data manipulation. 
 
 
-## Quality Control for Phase 2 Data
+## Quality Control 
 
 The R library (`FourCePhase2Data`) in this repository contains functions that conduct quality control for the Phase 2 Data: 
 1. **QC for Phase 2 patient-level data**. We will check if the summary statistics obtained from Phase 2 patient-level data is consistent with the aggreated results generated for Phase1.1.
@@ -40,9 +40,9 @@ The R library (`FourCePhase2Data`) in this repository contains functions that co
 A QC report will be generated in word format. 
 
 
-## Data Cleaning for Phase 2 Data
+## Data manipulation 
 
-The R library (`FourCePhase2Data`) in this repository also contains functions for data clean, which generates data in specific formats to fit into different analyses:  
+The R library (`FourCePhase2Data`) in this repository also contains functions for data manipulation, which generates data in specific formats to fit into different analyses:  
 1. **Longitudinal data for Labs**: days since admission 
 2. **Longitudinal data for Medications**: before and since admission 
 3. **Longitudinal data for Diagnoses**: before and since admission 
@@ -94,7 +94,7 @@ runQC_report(phase1.dc,phase1.cc, phase1.dem,phase1.diag, phase1.lab, phase1.med
 ```
 **If there is any issue identified in Step 5, please fix the issue first before going to Step 6.**
 
-6. Data Cleaning.
+6. Data Manipulation.
 ``` R
 Phase2Data_Labs_Longitudinal=runData_Labs_Longitudinal(phase2.po, output.dir)
 Phase2Data_Medications_Longitudinal=runData_Medications_Longitudinal(phase2.po, output.dir)
