@@ -1,4 +1,4 @@
-# Phase2DataRPackage
+# Phase2.1DataRPackage
 This repository contains R utility functions for Phase 2 Data Pre-Processing for the 4CE Consortium.
 
 # Installation
@@ -6,19 +6,19 @@ This repository contains R utility functions for Phase 2 Data Pre-Processing for
 To install this package in R:
 
 ``` R
-devtools::install_github("https://github.com/covidclinical/Phase2DataRPackage", subdir="FourCePhase2Data", upgrade=FALSE)
+devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE)
 ```
 
-# 4CE Phase 2 Data Pre-Processing Overview
+# 4CE Phase 2.1 Data Pre-Processing Overview
 
-The Phase 2 Data Pre-Processing is recommended for all sites before running the 4CE consortium Phase 2 project. The Phase 2 Data Pre-Processing consists of two parts: quality control and data transposition. 
+The Phase 2.1 Data Pre-Processing is recommended for all sites before running the 4CE consortium Phase 2.1 project. The Phase 2.1 Data Pre-Processing consists of two parts: quality control and data transposition. 
 
 
 ## Quality Control 
 
-The R library (`FourCePhase2Data`) in this repository contains functions that conduct quality control for the Phase 2 Data: 
-1. **QC for Phase 2 patient-level data**. We will check if the summary statistics obtained from Phase 2 patient-level data is consistent with the aggreated results generated for Phase1.1.
-2. **QC for Phase 2 summary statistics**. We will check the following critera: 
+The R library (`FourCePhase2.1Data`) in this repository contains functions that conduct quality control for the Phase 2.1 Data: 
+1. **QC for Phase 2.1 patient-level data**. We will check if the summary statistics obtained from Phase 2.1 patient-level data is consistent with the aggreated results generated for Phase1.1.
+2. **QC for Phase 2.1 summary statistics**. We will check the following critera: 
 + Demographics:  
   + if there is missing demographic groups (e.g., missing age group); 
   + if there is negative patient numbres or counts; 
@@ -58,7 +58,7 @@ The R library (`FourCePhase2Data`) in this repository also contains functions fo
 2. Install and load the R package:
 
 ``` R
-devtools::install_github("https://github.com/covidclinical/Phase2DataRPackage", subdir="FourCePhase2Data", upgrade=FALSE)
+devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE)
 library(FourCePhase2Data)
 ```
 3. Set the working, input and output directories. In my example, I set the working directory to "/4ceData/RDevelopment", and specified "Input/" and "Output/". The users can specify different directories as needed. The input.dir should be where you save the Phase 2 patient level data and Phase 2 summary data, and the output dir will be the destination of the QC report and cleaned data. 
