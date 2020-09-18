@@ -52,7 +52,7 @@ The R library (`FourCePhase2Data`) in this repository also contains functions fo
 
 # Get Started
 
-1. Run the Docker container and launch the localhost Rstudio. The details can be found in (https://github.com/covidclinical/Phase2.1_Docker_Analysis).
+1. Run the Docker container and launch the localhost Rstudio. The details can be found in (https://github.com/covidclinical/Phase2.1DockerAnalysis).
 
 
 2. Install and load the R package:
