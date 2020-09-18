@@ -26,7 +26,7 @@ The R library (`FourCePhase2.1Data`) in this repository contains functions that 
 + Medications and Diagnoses:
   + if there is any code not belong to the list of medclass or ICD10; 
   + if there is negative patient numbers or counts; 
-  + if the number of all patients is greater than the number of severe patients.
+  + if the number of all patients is less than the number of severe patients.
 + Labs: 
   + if there is any labs not belong to the list of loinc codes;
   + if there is negative patients nubmers; 
