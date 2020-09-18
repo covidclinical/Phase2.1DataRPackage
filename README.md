@@ -11,7 +11,7 @@ devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage"
 
 # 4CE Phase 2.1 Data Pre-Processing Overview
 
-The Phase 2.1 Data Pre-Processing is recommended for all sites before running the 4CE consortium Phase 2.1 project. The Phase 2.1 Data Pre-Processing consists of two parts: quality control and data transposition. 
+The Phase 2.1 Data Pre-Processing is recommended for all sites before running the 4CE consortium Phase 2.1 project. The Phase 2.1 Data Pre-Processing consists of two parts: quality control and data pivot. 
 
 
 ## Quality Control 
@@ -40,7 +40,7 @@ The R library (`FourCePhase2.1Data`) in this repository contains functions that 
 A QC report will be generated in word format. 
 
 
-## Data transposition 
+## Data pivot 
 
 The R library (`FourCePhase2Data`) in this repository also contains functions for data manipulation, which generates data in specific formats to fit into different analyses:  
 1. **Longitudinal data for Labs**: days since admission 
@@ -52,7 +52,7 @@ The R library (`FourCePhase2Data`) in this repository also contains functions fo
 
 # Get Started
 
-1. Run the Docker container and launch the localhost Rstudio. The details can be found in (https://github.com/covidclinical/Phase2.0_Docker_Analysis).
+1. Run the Docker container and launch the localhost Rstudio. The details can be found in (https://github.com/covidclinical/Phase2.1_Docker_Analysis).
 
 
 2. Install and load the R package:
@@ -94,7 +94,7 @@ runQC_report(phase1.dc,phase1.cc, phase1.dem,phase1.diag, phase1.lab, phase1.med
 ```
 **If there is any issue identified in Step 5, please fix the issue first before going to Step 6.**
 
-6. Data Transposition.
+6. Data Pivot.
 ``` R
 Phase2Data_Labs_Longitudinal=runData_Labs_Longitudinal(phase2.po, output.dir)
 Phase2Data_Medications_Longitudinal=runData_Medications_Longitudinal(phase2.po, output.dir)
