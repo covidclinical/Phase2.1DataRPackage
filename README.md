@@ -90,34 +90,37 @@ input.dir = "Input/"
 output.dir = "Output/" 
 ```
 
-4. Read in the Phase 2 patient level data, and Phase 2 summary data. 
+4. Read in the Phase1.1 patient aggregate data. Please change the file names if needed. 
 ``` R
 siteid="SITE001" ##replace with your siteid
-phase2.ClinicalCourse=read.csv(paste0(input.dir, "Phase2LocalPatientClinicalCourse.csv"))
-phase2.PatientObservations=read.csv(paste0(input.dir, "Phase2LocalPatientObservations.csv"))
-phase2.PatientSummary=read.csv(paste0(input.dir, "Phase2LocalPatientSummary.csv"))
 phase1.Labs=read.csv(paste0(input.dir, "Labs-", siteid,".csv"))
 phase1.Medications=read.csv(paste0(input.dir, "Medications-", siteid,".csv"))
 phase1.Diagnoses=read.csv(paste0(input.dir, "Diagnoses-", siteid,".csv"))
 phase1.Demographics=read.csv(paste0(input.dir, "Demographics-", siteid,".csv"))
 phase1.DailyCounts=read.csv(paste0(input.dir, "DailyCounts-", siteid,".csv"))
 phase1.ClinicalCourse=read.csv(paste0(input.dir, "ClinicalCourse-", siteid,".csv"))
-
 ```
 
-5. Conduct QC. 
+5. Read in the Phase2.1 patient level data. Please change the file names if needed. 
+``` R
+phase2.ClinicalCourse=read.csv(paste0(input.dir, "Phase2LocalPatientClinicalCourse.csv"))
+phase2.PatientObservations=read.csv(paste0(input.dir, "Phase2LocalPatientObservations.csv"))
+phase2.PatientSummary=read.csv(paste0(input.dir, "Phase2LocalPatientSummary.csv"))
+```
+
+6. Conduct QC. 
 ``` R
 runQC(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, phase1.Labs, phase1.Medications, phase1.Diagnoses, phase1.ClinicalCourse, output.dir)
 
 ```
-**If the above steps have worked correctly, you should be able to see the following files in the output directory:
+7. If the above steps have worked correctly, you should be able to see the following files in the output directory:
 
 + Phase1.1QC_Report.doc
 + Phase2.1QC_Report.doc
 
 **If there is any issue identified in Step 5, please fix the issue before going to Step 6.**
 
-6. Data Pivot.
+8. Data Pivot.
 ``` R
 Phase2Data_Labs_Longitudinal=runData_Labs_Longitudinal(phase2.po, output.dir)
 Phase2Data_Medications_Longitudinal=runData_Medications_Longitudinal(phase2.po, output.dir)
@@ -126,7 +129,7 @@ Phase2Data_Covariates_Baseline=runData_Covariates_Baseline(phase2.cc, phase2.po,
 Phase2Data_EventTime=runData_EventTime(phase2.cc, output.dir)
 ```
 
-7. If step 6 has worked correctly, you should be able to see the following files in the output directory:
+9. If step 6 has worked correctly, you should be able to see the following files in the output directory:
 
 + Phase2Data_Labs_Longitudinal.csv
 + Phase2Data_Medications_Longitudinal.csv
