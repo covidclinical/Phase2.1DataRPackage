@@ -80,7 +80,7 @@ The R library (`FourCePhase2.1Data`) in this repository also contains functions 
 
 ``` R
 devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE)
-library(FourCePhase2Data)
+library(FourCePhase2.1Data)
 ```
 3. Set the working, input and output directories. In my example, I set the working directory to "/4ceData/RDevelopment", and specified "Input/" and "Output/". The users can specify different directories as needed. The input.dir should be where you save the Phase1.1 aggregate data obtained using Phase1.1SqlDataExtract  (https://github.com/covidclinical/Phase1.1SqlDataExtraction) and Phase 2.1 patient level data obtained using Phase2.1SqlDataExtract (https://github.com/covidclinical/Phase2.1SqlDataExtraction); and the output dir will be the destination of the QC reports and data pivots. 
 
