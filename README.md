@@ -118,7 +118,7 @@ runQC(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, 
 + Phase1.1QC_Report.doc
 + Phase2.1QC_Report.doc
 
-**If there is any issue identified in Step 5, please fix the issue before going to Step 6.**
+**If there is any issue identified in Step 7, please fix the issue before going to Data Pivot.**
 
 8. Data Pivot.
 ``` R
