@@ -120,22 +120,25 @@ runQC(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, 
 
 **If there is any issue identified in Step 7, please fix the issue before going to Data Pivot.**
 
-8. Data Pivot.
+8. Data Pivot. The data.type can be chosen from:
+
++ Labs_Longitudinal
++ Medications_Longitudinal
++ Diagnoses_Longitudina
++ Covariates_Baseline
++ EventTime
+
 ``` R
-Phase2Data_Labs_Longitudinal=runData_Labs_Longitudinal(phase2.po, output.dir)
-Phase2Data_Medications_Longitudinal=runData_Medications_Longitudinal(phase2.po, output.dir)
-Phase2Data_Diagnoses_Longitudinal=runData_Diagnoses_Longitudinal(phase2.po, output.dir)
-Phase2Data_Covariates_Baseline=runData_Covariates_Baseline(phase2.cc, phase2.po, phase2.ps, output.dir)
-Phase2Data_EventTime=runData_EventTime(phase2.cc, output.dir)
+runData(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, data.type="Labs_Longitudinal", output.dir)
 ```
 
 9. If step 6 has worked correctly, you should be able to see the following files in the output directory:
 
-+ Phase2Data_Labs_Longitudinal.csv
-+ Phase2Data_Medications_Longitudinal.csv
-+ Phase2Data_Diagnoses_Longitudinal.csv
-+ Phase2Data_Covariates_Baseline.csv
-+ Phase2Data_EventTime.csv
++ Phase2.1DataPivot_Labs_Longitudinal.csv
++ Phase2.1DataPivot_Medications_Longitudinal.csv
++ Phase2.1DataPivot_Diagnoses_Longitudinal.csv
++ Phase2.1DataPivota_Covariates_Baseline.csv
++ Phase2.1DataPivot_EventTime.csv
 
 
 
