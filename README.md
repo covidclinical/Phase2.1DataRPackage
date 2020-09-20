@@ -63,7 +63,7 @@ The QC reports for Phase1.1 and Phase2.1 will be generated in word format.
 
 ## Data pivot 
 
-The R library (`FourCePhase2Data`) in this repository also contains functions for data manipulation, which generates data in specific formats to fit into different analyses:  
+The R library (`FourCePhase2.1Data`) in this repository also contains functions for data manipulation, which generates data in specific formats to fit into different analyses:  
 1. **Longitudinal data for Labs**: days since admission 
 2. **Longitudinal data for Medications**: before and since admission 
 3. **Longitudinal data for Diagnoses**: before and since admission 
