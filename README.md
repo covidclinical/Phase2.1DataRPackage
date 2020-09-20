@@ -92,10 +92,10 @@ output.dir = "Output/"
 
 4. Read in the Phase 2 patient level data, and Phase 2 summary data. 
 ``` R
+siteid="SITE001" ##replace with your siteid
 phase2.ClinicalCourse=read.csv(paste0(input.dir, "Phase2LocalPatientClinicalCourse.csv"))
 phase2.PatientObservations=read.csv(paste0(input.dir, "Phase2LocalPatientObservations.csv"))
 phase2.PatientSummary=read.csv(paste0(input.dir, "Phase2LocalPatientSummary.csv"))
-siteid="MGB" ##replace with your siteid
 phase1.Labs=read.csv(paste0(input.dir, "Labs-", siteid,".csv"))
 phase1.Medications=read.csv(paste0(input.dir, "Medications-", siteid,".csv"))
 phase1.Diagnoses=read.csv(paste0(input.dir, "Diagnoses-", siteid,".csv"))
