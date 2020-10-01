@@ -19,8 +19,6 @@ runQC <- function(siteid){
   
   file.nm1="Phase1.1QC_Report.doc"
   rtffile <- RTF(file.nm1)  
-  output.dir=getOutputDataDirectoryName()
-
   runQC_Phase1.1_report(rtffile, phase1.DailyCounts,phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir,site.nm="MGB")
   done(rtffile)
   

@@ -10,7 +10,7 @@ pivotData_Labs_Longitudinal <- function(siteid) {
   phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
   phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
   
-    data(code.dict)
+  data(code.dict, package="FourCePhase2.1Data")
     dat.x.raw=Phase2LocalPatientObservations
     res=lapply(0:max(dat.x.raw$days_since_admission), function(days_since_admission) data_lab_clean(dat.x.raw, code.dict, days_since_admission))
     res=do.call(rbind,res)
@@ -59,7 +59,7 @@ pivotData_Covariates_Baseline <- function(siteid) {
   phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
   phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
   
-  data(code.dict)
+  data(code.dict, package="FourCePhase2.1Data")
   dat.surv.raw=Phase2LocalPatientClinicalCourse
   dat.x.raw=Phase2LocalPatientObservations
   dat.dem.raw=Phase2LocalPatientSummary
