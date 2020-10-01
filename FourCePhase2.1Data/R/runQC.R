@@ -4,8 +4,20 @@
 #' @keywords 4CE Phase2 Project
 #' @export
 
-runQC <- function(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, phase1.Labs, phase1.Medications, phase1.Diagnoses, phase1.ClinicalCourse, output.dir){
-  file.nm1=paste0(output.dir, "Phase1.1QC_Report.doc")
+runQC <- function(siteid){
+  dir.input=getInputDataDirectoryName()
+  phase1.Labs=read.csv(paste0(dir.input,"/Labs-", siteid,".csv"))
+  phase1.Medications=read.csv(paste0(dir.input, "/Medications-", siteid,".csv"))
+  phase1.Diagnoses=read.csv(paste0(dir.input, "/Diagnoses-", siteid,".csv"))
+  phase1.Demographics=read.csv(paste0(dir.input, "/Demographics-", siteid,".csv"))
+  phase1.DailyCounts=read.csv(paste0(dir.input, "/DailyCounts-", siteid,".csv"))
+  phase1.ClinicalCourse=read.csv(paste0(dir.input, "/ClinicalCourse-", siteid,".csv"))
+  
+  phase2.ClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
+  phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
+  phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
+  
+  file.nm1="Phase1.1QC_Report.doc"
   rtffile <- RTF(file.nm1)  
   runQC_Phase1.1_report(rtffile, phase1.DailyCounts,phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir,site.nm="MGB")
   done(rtffile)

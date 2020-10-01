@@ -4,21 +4,12 @@
 #' @keywords 4CE Phase2 Project
 #' @export
 
-runData=function(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, data.type, output.dir){
-  if(data.type=="Labs_Longitudinal"){
-    data_pivot=runData_Labs_Longitudinal(phase2.PatientObservations, output.dir)}
-if(data.type=="Medications_Longitudinal"){
-  data_pivot=runData_Medications_Longitudinal(phase2.PatientObservations, output.dir)}
-if(data.type=="Diagnoses_Longitudinal"){
-  data_pivot=runData_Diagnoses_Longitudinal(phase2.PatientObservations, output.dir)}
-if(data.type=="Covariates_Baseline"){
-  data_pivot=runData_Covariates_Baseline(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, output.dir)}
-if(data.type=="EventTime"){
-  data_pivot=runData_EventTime(phase2.ClinicalCourse, output.dir)}
-  write.csv(data_pivot, file=paste0(output.dir, "Phase2.1DataPivot_", data.type,".csv"), row.names=F)
-}
-
-runData_Labs_Longitudinal <- function(Phase2LocalPatientObservations, output.dir) {
+runData_Labs_Longitudinal <- function(siteid) {
+  dir.input=getInputDataDirectoryName()
+  phase2.ClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
+  phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
+  phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
+  
     data(code.dict)
     dat.x.raw=Phase2LocalPatientObservations
     res=lapply(0:max(dat.x.raw$days_since_admission), function(days_since_admission) data_lab_clean(dat.x.raw, code.dict, days_since_admission))
@@ -29,7 +20,13 @@ runData_Labs_Longitudinal <- function(Phase2LocalPatientObservations, output.dir
     res
 }
 
-runData_Medications_Longitudinal <- function(Phase2LocalPatientObservations, output.dir) {
+runData_Medications_Longitudinal <- function(siteid) {
+  dir.input=getInputDataDirectoryName()
+  phase2.ClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
+  phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
+  phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
+  
+  
   dat.x.raw=Phase2LocalPatientObservations
   res=NULL
   res=lapply(c("before_admission", "since_admission"), function(days) data_med_clean(dat.x.raw, days))
@@ -39,7 +36,12 @@ runData_Medications_Longitudinal <- function(Phase2LocalPatientObservations, out
   res
 }
 
-runData_Diagnoses_Longitudinal <- function(Phase2LocalPatientObservations, output.dir) {
+runData_Diagnoses_Longitudinal <- function(siteid) {
+  dir.input=getInputDataDirectoryName()
+  phase2.ClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
+  phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
+  phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
+  
   dat.x.raw=Phase2LocalPatientObservations
   res=NULL
   nm.icd.all=sort(as.character(unique(dat.x.raw$concept_code[dat.x.raw$concept_type=="DIAG-ICD10"])))
@@ -51,7 +53,12 @@ runData_Diagnoses_Longitudinal <- function(Phase2LocalPatientObservations, outpu
   res
 }
 
-runData_Covariates_Baseline <- function(Phase2LocalPatientClinicalCourse, Phase2LocalPatientObservations, Phase2LocalPatientSummary, output.dir) {
+runData_Covariates_Baseline <- function(siteid) {
+  dir.input=getInputDataDirectoryName()
+  phase2.ClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
+  phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
+  phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
+  
   data(code.dict)
   dat.surv.raw=Phase2LocalPatientClinicalCourse
   dat.x.raw=Phase2LocalPatientObservations
@@ -60,7 +67,12 @@ runData_Covariates_Baseline <- function(Phase2LocalPatientClinicalCourse, Phase2
   res
 }
 
-runData_EventTime <- function(Phase2LocalPatientClinicalCourse, output.dir) {
+runData_EventTime <- function(siteid) {
+  dir.input=getInputDataDirectoryName()
+  phase2.ClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
+  phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
+  phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
+  
   res=data_event_clean(nm.event, Phase2LocalPatientClinicalCourse, daymax=30)
   res
 }
