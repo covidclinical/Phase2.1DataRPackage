@@ -17,7 +17,7 @@ runQC <- function(siteid){
   phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
   phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
   
-  output.dir=getOutputDataDirectoryName()
+  output.dir=getInputDataDirectoryName()
   
   file.nm1="Phase1.1QC_Report.doc"
   rtffile <- RTF(file.nm1)  
