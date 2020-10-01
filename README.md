@@ -80,47 +80,34 @@ The R library (`FourCePhase2.1Data`) in this repository also contains functions 
 
 ``` R
 devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE)
-library(FourCePhase2.1Data)
 ```
-3. Set the working, input and output directories. In my example, I set the working directory to "/4ceData/RDevelopment", and specified "Input/" and "Output/". The users can specify different directories as needed. The input.dir should be where you save the Phase1.1 aggregate data obtained using Phase1.1SqlDataExtract  (https://github.com/covidclinical/Phase1.1SqlDataExtraction) and Phase 2.1 patient level data obtained using Phase2.1SqlDataExtract (https://github.com/covidclinical/Phase2.1SqlDataExtraction); and the output dir will be the destination of the QC reports and data pivots. 
+3. Store the Phase1.1 data and Phase2.1 data in the /4ceData/Input directory that is mounted to the container. The list of .csv files is as follows:
++ Labs-[siteid].csv
++ Medications-[siteid].csv
++ Diagnoses-[siteid].csv
++ Demographics-[siteid].csv
++ DailyCounts-[siteid].csv
++ ClinicalCourse-[siteid].csv
++ LocalPatientClinicalCourse.csv
++ LocalPatientObservations.csv
++ LocalPatientSummary.csv
++ LocalPatientMapping.csv
 
+The above files are outputs of Phase1.1SqlDataExtract  (https://github.com/covidclinical/Phase1.1SqlDataExtraction) and Phase2.1SqlDataExtract (https://github.com/covidclinical/Phase2.1SqlDataExtraction).
+
+4. Conduct QC. 
 ``` R
-setwd("/4ceData/RDevelopment")
-input.dir = "Input/" 
-output.dir = "Output/" 
+currSiteId = FourCePhase2.1Data::getSiteId()
+FourCePhase2.1Data::runQC(currSiteId)
 ```
 
-4. Read in the Phase1.1 patient aggregate data. Please change the file names if needed. 
-``` R
-siteid="SITE001" ##replace with your siteid
-phase1.Labs=read.csv(paste0(input.dir, "Labs-", siteid,".csv"))
-phase1.Medications=read.csv(paste0(input.dir, "Medications-", siteid,".csv"))
-phase1.Diagnoses=read.csv(paste0(input.dir, "Diagnoses-", siteid,".csv"))
-phase1.Demographics=read.csv(paste0(input.dir, "Demographics-", siteid,".csv"))
-phase1.DailyCounts=read.csv(paste0(input.dir, "DailyCounts-", siteid,".csv"))
-phase1.ClinicalCourse=read.csv(paste0(input.dir, "ClinicalCourse-", siteid,".csv"))
-```
+5. If the above steps have worked correctly, you should be able to see the following QC report in the /4ceData/Input directory:
 
-5. Read in the Phase2.1 patient level data. Please change the file names if needed. 
-``` R
-phase2.ClinicalCourse=read.csv(paste0(input.dir, "Phase2LocalPatientClinicalCourse.csv"))
-phase2.PatientObservations=read.csv(paste0(input.dir, "Phase2LocalPatientObservations.csv"))
-phase2.PatientSummary=read.csv(paste0(input.dir, "Phase2LocalPatientSummary.csv"))
-```
-
-6. Conduct QC. 
-``` R
-runQC(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, phase1.Labs, phase1.Medications, phase1.Diagnoses, phase1.ClinicalCourse, output.dir)
-
-```
-7. If the above steps have worked correctly, you should be able to see the following files in the output directory:
-
-+ Phase1.1QC_Report.doc
 + Phase2.1QC_Report.doc
 
-**If there is any issue identified in Step 7, please fix the issue before going to Data Pivot.**
+**If there is any issue identified in Step 5, please fix the issue before going to Data Pivot.**
 
-8. Data Pivot. The data.type can be chosen from:
+6. Data Pivot. The data.type can be chosen from:
 
 + Labs_Longitudinal
 + Medications_Longitudinal
@@ -129,7 +116,7 @@ runQC(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, 
 + EventTime
 
 ``` R
-runData(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, data.type="Labs_Longitudinal", output.dir)
+pivotData_Labs_Longitudinal(siteid)
 ```
 
 9. If step 6 has worked correctly, you should be able to see the following files in the output directory:
