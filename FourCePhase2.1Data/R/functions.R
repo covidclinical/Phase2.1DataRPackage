@@ -139,7 +139,7 @@ data_analysis_clean=function(code.dict, nm.event, dat.surv.raw, dat.x.raw, dat.d
 }
 
 tab_compare_lab=function(myday, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Labs){
-    data(FourCePhase2.1Data::code.dict)
+    data(code.dict)
     code.dict=apply(code.dict, 2, as.character)
     code.dict.new=data.frame(code.dict)
     colnames(code.dict.new)[1]="concept_code"
@@ -383,8 +383,8 @@ tab_compare_dc=function(phase2.ClinicalCourse, phase1.DailyCounts){
 }
 
 qc_site=function(phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, site.nm){
-    data(FourCePhase2.1Data::icd.list)
-    data(FourCePhase2.1Data::lab.range)
+    data(icd.list)
+    data(lab.range)
     qc.dm=err_report_demographics_site(phase1.Demographics, site.nm)
     qc.cc=err_report_clinicalcourse_site(phase1.ClinicalCourse, site.nm)
     qc.dc=err_report_dailycounts_site(phase1.DailyCounts, site.nm)
@@ -529,7 +529,7 @@ err_report_crossover_site=function(dat.ClinicalCourse, dat.Demographics, dat.Dai
 }
 
 err_report_diagnosis_site=function(dat.Diagnoses, dat.ClinicalCourse, dat.Demographics, dat.DailyCounts, icd.list, site.nm){
-    icd.list0=icd.list
+    icd.list0=data(icd.list)
     err.label1="N_all_before > N_all at day0"
     err.label2="N_all_since > N_all at day0"
     err.label3= "N_all_before < N_ever_severe_before"
