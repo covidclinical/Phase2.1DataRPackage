@@ -4,7 +4,7 @@
 #' @keywords 4CE Phase2 Project
 #' @export
 
-runData_Labs_Longitudinal <- function(siteid) {
+pivotData_Labs_Longitudinal <- function(siteid) {
   dir.input=getInputDataDirectoryName()
   phase2.ClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
   phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
@@ -20,7 +20,7 @@ runData_Labs_Longitudinal <- function(siteid) {
     res
 }
 
-runData_Medications_Longitudinal <- function(siteid) {
+pivotData_Medications_Longitudinal <- function(siteid) {
   dir.input=getInputDataDirectoryName()
   phase2.ClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
   phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
@@ -36,7 +36,7 @@ runData_Medications_Longitudinal <- function(siteid) {
   res
 }
 
-runData_Diagnoses_Longitudinal <- function(siteid) {
+pivotData_Diagnoses_Longitudinal <- function(siteid) {
   dir.input=getInputDataDirectoryName()
   phase2.ClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
   phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
@@ -53,7 +53,7 @@ runData_Diagnoses_Longitudinal <- function(siteid) {
   res
 }
 
-runData_Covariates_Baseline <- function(siteid) {
+pivotData_Covariates_Baseline <- function(siteid) {
   dir.input=getInputDataDirectoryName()
   phase2.ClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
   phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
@@ -67,7 +67,7 @@ runData_Covariates_Baseline <- function(siteid) {
   res
 }
 
-runData_EventTime <- function(siteid) {
+pivotData_EventTime <- function(siteid) {
   dir.input=getInputDataDirectoryName()
   phase2.ClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
   phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
