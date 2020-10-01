@@ -31,6 +31,20 @@ getInputDataDirectoryName <- function(fullyQualified=TRUE) {
     }
 }
 
+getOutputDataDirectoryName <- function(fullyQualified=TRUE) {
+
+    if (fullyQualified) {
+        return(
+            file.path(
+                get4ceRootDirectoryName(), 
+                getInputDataDirectoryName(fullyQualified=FALSE)
+            )
+        )
+    } else {
+        ## the relative path is hardcoded
+        return("Output")
+    }
+}
 #' Returns the name of the site whose files are in the directory returned by getInputDataDirectoryName().
 #' Throws an error if files are inconsistently named, or if files for multiple site ids are present,
 #' or if required files are missing.
