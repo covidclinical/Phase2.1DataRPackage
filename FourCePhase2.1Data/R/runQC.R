@@ -5,8 +5,7 @@
 #' @export
 
 runQC <- function(siteid){
-  #dir.input=getInputDataDirectoryName()
-  dir.input="4ceData/Input/"
+  dir.input=getInputDataDirectoryName()
   dir.output=dir.input
   # read Phase1.1 and Phase2.1 data
   phase1.Labs=read.csv(paste0(dir.input,"/Labs-", siteid,".csv"))
