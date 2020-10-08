@@ -348,7 +348,7 @@ data_analysis_clean=function(code.dict, nm.event, dat.surv.raw, dat.x.raw, dat.d
     combine.nm=paste(combine.set, collapse=":")
     code.dict=data.frame(rbind(code.dict, c(combine.nm, "D-dimer")))
     dat.surv=data_surv_clean(dat.surv.raw, nm.patient_num, nm.days_since_admission, daymax=30, nm.event)
-    dat.lab=data_lab_clean(dat.x.raw, code.dict, nm.patient_num, nm.days_since_admission, nm.value, day=0)
+    dat.lab=data_lab_clean(dat.x.raw, code.dict, days_since_admission=0)
     dat.dem=data_dem_clean(dat.dem.raw, nm.patient_num, nm.gender="sex", nm.age="age_group", nm.race="race")
     dat.analysis=suppressMessages(left_join(dat.surv, dat.dem, by=nm.patient_num))
     dat.analysis=suppressMessages(left_join(dat.analysis, dat.lab, by=nm.patient_num))
