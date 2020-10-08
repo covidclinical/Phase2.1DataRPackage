@@ -336,6 +336,9 @@ data_event_clean=function(nm.event, dat.surv.raw, daymax=30){
     dat.surv=suppressMessages(left_join(dat.surv.severe, dat.surv.deceased, by="patient_num"))
     dat.surv$x_severedeceased=pmin(dat.surv$x_severe,dat.surv$x_deceased)
     dat.surv$delta_severedeceased=ifelse((dat.surv$delta_severe+dat.surv$delta_deceased)!=0,1,0)
+    calendar_at_admission=dat.surv.raw[dat.surv.raw$days_since_admission==0, c("patient_num", "calendar_date")]
+    dat.surv=left_join(calendar_at_admission, dat.surv, by="patient_num")
+    colnames(dat.surv)[2]="calendar_date_at_admission"
     dat.surv
 }
 

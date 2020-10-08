@@ -11,7 +11,7 @@ pivotData_Labs_Longitudinal <- function(siteid) {
   phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
   
   data(code.dict, package="FourCePhase2.1Data")
-    dat.x.raw=Phase2LocalPatientObservations
+    dat.x.raw=phase2.PatientObservations
     res=lapply(0:max(dat.x.raw$days_since_admission), function(days_since_admission) data_lab_clean(dat.x.raw, code.dict, days_since_admission))
     res=do.call(rbind,res)
     res=res[,c("patient_num", "days_since_admission", setdiff(colnames(res), c("patient_num", "days_since_admission")))]
@@ -27,7 +27,7 @@ pivotData_Medications_Longitudinal <- function(siteid) {
   phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
   
   
-  dat.x.raw=Phase2LocalPatientObservations
+  dat.x.raw=phase2.PatientObservations
   res=NULL
   res=lapply(c("before_admission", "since_admission"), function(days) data_med_clean(dat.x.raw, days))
   res=do.call(rbind,res)
@@ -42,7 +42,7 @@ pivotData_Diagnoses_Longitudinal <- function(siteid) {
   phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
   phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
   
-  dat.x.raw=Phase2LocalPatientObservations
+  dat.x.raw=phase2.PatientObservations
   res=NULL
   nm.icd.all=sort(as.character(unique(dat.x.raw$concept_code[dat.x.raw$concept_type=="DIAG-ICD10"])))
   res=lapply(c("before_admission", "since_admission"), function(days) data_icd_clean(dat.x.raw, nm.icd.all, days))
@@ -60,9 +60,9 @@ pivotData_Covariates_Baseline <- function(siteid) {
   phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
   
   data(code.dict, package="FourCePhase2.1Data")
-  dat.surv.raw=Phase2LocalPatientClinicalCourse
-  dat.x.raw=Phase2LocalPatientObservations
-  dat.dem.raw=Phase2LocalPatientSummary
+  dat.surv.raw=phase2.ClinicalCourse
+  dat.x.raw=phase2.PatientObservations
+  dat.dem.raw=phase2.PatientSummary
   res=data_baseline_clean(code.dict, dat.surv.raw, dat.x.raw, dat.dem.raw)
   res
 }
@@ -73,7 +73,7 @@ pivotData_EventTime <- function(siteid) {
   phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
   phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
   
-  res=data_event_clean(nm.event, Phase2LocalPatientClinicalCourse, daymax=30)
+  res=data_event_clean(nm.event, phase2.ClinicalCourse, daymax=30)
   res
 }
 
