@@ -41,7 +41,7 @@ runQC <- function(siteid){
     
   done(rtffile)
   
-  #if((is.error1+is.error2)!=0)
+  #if((is.error1+is.error2)!=0){
   #stop('QC isssues identified. Details can be find in "Phase1.1DataQCReport.doc" and "Phase2.1DataQCReport.doc" in the input directory. Please fix all the issues before conducting analysis.')
 #}
 }
