@@ -6,6 +6,7 @@
 
 pivotData_Labs_Longitudinal <- function(siteid) {
   dir.input=getInputDataDirectoryName()
+
   phase2.ClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
   phase2.PatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
   phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
