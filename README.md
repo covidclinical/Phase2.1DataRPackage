@@ -119,16 +119,23 @@ FourCePhase2.1Data::runQC(currSiteId)
 + EventTime
 
 ``` R
-pivotData_Labs_Longitudinal(siteid)
-pivotData_Medications_Longitudinal(siteid)
-pivotData_Diagnoses_Longitudinal(siteid)
-pivotData_Covariates_Baseline(siteid)
-pivotData_EventTime(siteid)
+dat.lab=pivotData_Labs_Longitudinal(siteid)
+dat.med=pivotData_Medications_Longitudinal(siteid)
+dat.diag=pivotData_Diagnoses_Longitudinal(siteid)
+dat.baseline=pivotData_Covariates_Baseline(siteid)
+dat.eventime=pivotData_EventTime(siteid)
 
 ```
 
-9. If step 6 has worked correctly, you should be able to see the following files in the output directory:
+7. Save the data pivot to an output directory. In this example, the output directory was set as "/4ceData/Output", but feel free to specify your own output directory:
 
+``` R
+dir.output="/4ceData/Output/"
+write.csv(dat.lab, paste0(dir.output,"Phase2.1DataPivot_Labs_Longitudinal.csv", row.names=F)
+```
+Similary to dat.med, dat.diag, dat.baseline and dat.event. 
+
+9. If step 6 has worked correctly, you should be able to see the following files in the output directory:
 + Phase2.1DataPivot_Labs_Longitudinal.csv
 + Phase2.1DataPivot_Medications_Longitudinal.csv
 + Phase2.1DataPivot_Diagnoses_Longitudinal.csv
