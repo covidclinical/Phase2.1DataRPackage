@@ -44,7 +44,7 @@ The R library (`FourCePhase2.1Data`) in this repository contains functions that 
   + if n_all_before, n_all_since, n_severe_before, n_severe_since are different between phase2.1 and phase1.1;
 + Labs:
   + if there is duplicated row for the same lab on the same day but with different counts/measures;
-  + if n_all, mean_all, stdev_all, n_severe, mean_severe, stdev_severe at day0 are different between phase2.1 and phase1.1. Because the definitions of the date at admission are slightly different between Phase1.1 and Phase2.1, an error of less than 1% is allowed. For example, n_all from phase1.1 should be within the range (n_all*1.01,n_all*0.99) from phase2.1
+  + if n_all, mean_all, stdev_all, n_severe, mean_severe, stdev_severe at day0 are different between phase2.1 and phase1.1. Because the definitions of the date at admission are slightly different between Phase1.1 and Phase2.1, an error of less than 1% is allowed. For example, n_all from phase1.1 should be within the range (0.99n_all,1.01n_all) from phase2.1
 + Medications:
   + if there is duplicated row for the same MEDCLASS on the same day but with different counts;
   + if n_all_before, n_all_since, n_severe_before, n_severe_since are different between phase2.1 and phase1.1. Because the definitions of the date at admission are slightly different between Phase1.1 and Phase2.1, an one day leevay is allowed. For example, n_all_since from phase1.1 should be within the range (n_all for day>0, n_all for day>=0) from phase2.1. 
