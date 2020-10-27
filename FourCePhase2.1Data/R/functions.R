@@ -74,7 +74,8 @@ runQC_Phase1.1_report=function(rtffile,phase1.DailyCounts, phase1.ClinicalCourse
 
 runQC_tab_lab <- function(rtffile, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Labs, output.dir) {
   print("Checking Phase2.1 Labs ...")
-  junk=tab_compare_lab(myday=14, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Labs)
+  junk=tab_compare_lab(myday=0, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Labs)
+ 
   res=junk$res
   nm.duplicated=res[duplicated(res[,"labname"]),c("labname")]
   tryCatch(addParagraph(rtffile, "Labs\n"), error=function(e) NA)
@@ -90,7 +91,7 @@ runQC_tab_lab <- function(rtffile, phase2.ClinicalCourse, phase2.PatientObservat
     nm1=paste0("p1.", nm)
     nm2=paste0("p2.", nm)
     nm.check=paste0("nm.diff.",nm)
-    nm.labname=unique(res[which(round(res[,nm1],5)!=round(res[,nm2],5)),"labname"])
+    nm.labname=unique(res[which(round(res[,nm1],5)>round(res[,nm2]+res[,nm2]*0.01,5)|round(res[,nm1],5)<round(res[,nm2]-res[,nm2]*0.01,5)),"labname"])
     tryCatch(addParagraph(rtffile, paste0("Labs with Different ", nm, " between Phase1.1 and Phase2.1:")), error=function(e) NA)
     if(length(nm.labname)!=0){
       print(paste0("Labs with Different ", nm, " between Phase1.1 and Phase2.1: ", nm.labname))
@@ -119,17 +120,12 @@ runQC_tab_med <- function(rtffile, phase2.ClinicalCourse, phase2.PatientObservat
   nm.medclass.all=NULL
   for (nm in c("n_all_before", "n_all_since", "n_severe_before", "n_severe_since")){
     nm1=paste0("p1.", nm)
-    if(nm%in%c("n_all_before", "n_severe_before")){
     nm2.1=paste0("p2.", nm, "1")
     nm2.2=paste0("p2.", nm, "2")
     
     nm.check=paste0("nm.diff.",nm)
-    nm.medclass=unique(res[which(res[,nm1]<res[,nm2.1]|res[,nm1]>res[,nm2.2]),"medclass"])}else{
-      nm2=paste0("p2.", nm)
-      
-      nm.check=paste0("nm.diff.",nm)
-      nm.medclass=unique(res[which(res[,nm1]!=res[,nm2]),"medclass"]) 
-    }
+    nm.medclass=unique(res[which(res[,nm1]<res[,nm2.1]|res[,nm1]>res[,nm2.2]),"medclass"])
+    
     nm.medclass.all=c(nm.medclass.all, nm.medclass)
     tryCatch(addParagraph(rtffile, paste0("Medclass with Different ", nm, " between Phase1.1 and Phase2.1:")), error=function(e) NA)
     if(length(nm.medclass)!=0){
@@ -156,18 +152,12 @@ runQC_tab_diag <- function(rtffile, phase2.ClinicalCourse, phase2.PatientObserva
   nm.medclass.all=NULL
   for (nm in c("n_all_before", "n_all_since", "n_severe_before", "n_severe_since")){
     nm1=paste0("p1.", nm)
-    if(nm%in%c("n_all_before", "n_severe_before")){
     nm2.1=paste0("p2.", nm,1)
     nm2.2=paste0("p2.", nm,2)
     
     nm.check=paste0("nm.diff.",nm)
     nm.medclass=unique(res[which(res[,nm1]<res[,nm2.1]|res[,nm1]>res[,nm2.2]),"diag-icd"])
-    }else{
-      nm2=paste0("p2.", nm)
-
-      nm.check=paste0("nm.diff.",nm)
-      nm.medclass=unique(res[which(res[,nm1]!=res[,nm2]),"diag-icd"])
-    }
+    
     nm.medclass.all=c(nm.medclass.all, nm.medclass)
     tryCatch(addParagraph(rtffile, paste0("Diagnoses with Different ", nm, " between Phase1.1 and Phase2.1:")), error=function(e) NA)
     if(length(nm.medclass)!=0){
@@ -427,6 +417,7 @@ tab_compare_lab=function(myday, phase2.ClinicalCourse, phase2.PatientObservation
     }
     colnames(res.p2)[-c(1:2)]=paste0("p2.", colnames(res.p2)[-c(1:2)])
     colnames(res.p2)[1]="labname"
+    
     res.p1=NULL
     nm.lab2=sort(unique(phase1.Labs$loinc))
     for(nm in nm.lab2){
@@ -486,10 +477,14 @@ tab_compare_med=function(phase2.PatientObservations, phase2.ClinicalCourse, phas
         n_severe_before2=length(unique(dat[which(dat$days_since_admission<= (-14)   & dat$days_since_admission>= -366 & dat$concept_code==nm & dat$patient_num%in%patient_severe),"patient_num"]))
         
         
-        n_all_since=length(unique(dat[which(dat$days_since_admission>=0 & dat$concept_code==nm),"patient_num"]))
-        n_severe_since=length(unique(dat[which(dat$days_since_admission>=0 & dat$concept_code==nm & dat$patient_num%in%patient_severe),"patient_num"]))
+        n_all_since1=length(unique(dat[which(dat$days_since_admission>0 & dat$concept_code==nm),"patient_num"]))
+        n_severe_since1=length(unique(dat[which(dat$days_since_admission>0 & dat$concept_code==nm & dat$patient_num%in%patient_severe),"patient_num"]))
         
-        res.p2=rbind(res.p2, data.frame(medclass=nm,n_all_before1,n_all_before2, n_all_since,n_severe_before1, n_severe_before2, n_severe_since))
+        n_all_since2=length(unique(dat[which(dat$days_since_admission>=0 & dat$concept_code==nm),"patient_num"]))
+        n_severe_since2=length(unique(dat[which(dat$days_since_admission>=0 & dat$concept_code==nm & dat$patient_num%in%patient_severe),"patient_num"]))
+        
+        
+        res.p2=rbind(res.p2, data.frame(medclass=nm,n_all_before1,n_all_before2, n_all_since1, n_all_since2, n_severe_before1, n_severe_before2, n_severe_since1, n_severe_since2))
     }
     colnames(res.p2)[-1]=paste0("p2.", colnames(res.p2)[-1])
     res.p1=NULL
@@ -506,9 +501,9 @@ tab_compare_med=function(phase2.PatientObservations, phase2.ClinicalCourse, phas
     res=suppressMessages(left_join(res.p1, res.p2, by="medclass"))
     res=res[,c("medclass", 
                "p1.n_all_before","p2.n_all_before1","p2.n_all_before2",
-               "p1.n_all_since","p2.n_all_since",
+               "p1.n_all_since","p2.n_all_since1","p2.n_all_since2",
                "p1.n_severe_before","p2.n_severe_before1","p2.n_severe_before2",
-               "p1.n_severe_since","p2.n_severe_since"
+               "p1.n_severe_since","p2.n_severe_since1","p2.n_severe_since2"
     )]
     list(res=res, nm.med.add=nm.med.add)
 }
@@ -532,11 +527,17 @@ tab_compare_diag=function(phase2.PatientObservations, phase2.ClinicalCourse, pha
     n_all_before2=suppressMessages(left_join(data.frame(Var1=nm.diag), n_all_before2, by="Var1"))
     
     
-    tmp.all.since=dat[dat$days_since_admission>=0,c("patient_num", "concept_code")]
-    tmp.all.since=tmp.all.since[duplicated(tmp.all.since)!=1,]
-    n_all_since=table(tmp.all.since[,"concept_code"])
-    n_all_since=data.frame(n_all_since)
-    n_all_since=suppressMessages(left_join(data.frame(Var1=nm.diag), n_all_since, by="Var1"))
+    tmp.all.since1=dat[dat$days_since_admission>0,c("patient_num", "concept_code")]
+    tmp.all.since1=tmp.all.since1[duplicated(tmp.all.since1)!=1,]
+    n_all_since1=table(tmp.all.since1[,"concept_code"])
+    n_all_since1=data.frame(n_all_since1)
+    n_all_since1=suppressMessages(left_join(data.frame(Var1=nm.diag), n_all_since1, by="Var1"))
+    
+    tmp.all.since2=dat[dat$days_since_admission>=0,c("patient_num", "concept_code")]
+    tmp.all.since2=tmp.all.since2[duplicated(tmp.all.since2)!=1,]
+    n_all_since2=table(tmp.all.since2[,"concept_code"])
+    n_all_since2=data.frame(n_all_since2)
+    n_all_since2=suppressMessages(left_join(data.frame(Var1=nm.diag), n_all_since2, by="Var1"))
     
     tmp.severe.before1=dat[which(dat$days_since_admission<= (-16) & dat$days_since_admission>=-364 & dat$patient_num%in%patient_severe),c("patient_num", "concept_code")]
     tmp.severe.before1=tmp.severe.before1[duplicated(tmp.severe.before1)!=1,]
@@ -551,13 +552,21 @@ tab_compare_diag=function(phase2.PatientObservations, phase2.ClinicalCourse, pha
     n_severe_before2=suppressMessages(left_join(data.frame(Var1=nm.diag), n_severe_before2, by="Var1"))
     
     
-    tmp.severe.since=dat[dat$days_since_admission>=0& dat$patient_num%in%patient_severe,c("patient_num", "concept_code")]
-    tmp.severe.since=tmp.severe.since[duplicated(tmp.severe.since)!=1,]
-    n_severe_since=table(tmp.severe.since[,"concept_code"])
-    n_severe_since=data.frame(n_severe_since)
-    n_severe_since=suppressMessages(left_join(data.frame(Var1=nm.diag), n_severe_since, by="Var1"))
-    res.p2=cbind(n_all_before1,n_all_before2[,2], n_all_since[,2],n_severe_before1[,2],n_severe_before2[,2], n_severe_since[,2])
-    colnames(res.p2)=c("diag-icd","p2.n_all_before1","p2.n_all_before2","p2.n_all_since","p2.n_severe_before1","p2.n_severe_before2","p2.n_severe_since")
+    tmp.severe.since1=dat[dat$days_since_admission>0 & dat$patient_num%in%patient_severe,c("patient_num", "concept_code")]
+    tmp.severe.since1=tmp.severe.since1[duplicated(tmp.severe.since1)!=1,]
+    n_severe_since1=table(tmp.severe.since1[,"concept_code"])
+    n_severe_since1=data.frame(n_severe_since1)
+    n_severe_since1=suppressMessages(left_join(data.frame(Var1=nm.diag), n_severe_since1, by="Var1"))
+    
+    tmp.severe.since2=dat[dat$days_since_admission>=0& dat$patient_num%in%patient_severe,c("patient_num", "concept_code")]
+    tmp.severe.since2=tmp.severe.since2[duplicated(tmp.severe.since2)!=1,]
+    n_severe_since2=table(tmp.severe.since2[,"concept_code"])
+    n_severe_since2=data.frame(n_severe_since2)
+    n_severe_since2=suppressMessages(left_join(data.frame(Var1=nm.diag), n_severe_since2, by="Var1"))
+    
+    
+    res.p2=cbind(n_all_before1,n_all_before2[,2], n_all_since1[,2], n_all_since2[,2],n_severe_before1[,2],n_severe_before2[,2], n_severe_since1[,2], n_severe_since2[,2])
+    colnames(res.p2)=c("diag-icd","p2.n_all_before1","p2.n_all_before2","p2.n_all_since1","p2.n_all_since2","p2.n_severe_before1","p2.n_severe_before2","p2.n_severe_since1","p2.n_severe_since2")
     res.p2[is.na(res.p2)]=0
     
     res.p1=phase1.Diagnoses[, -c(1,3)]
@@ -565,9 +574,9 @@ tab_compare_diag=function(phase2.PatientObservations, phase2.ClinicalCourse, pha
     res=suppressMessages(left_join(res.p1, res.p2, by="diag-icd"))
     res=res[,c("diag-icd", 
                "p1.n_all_before","p2.n_all_before1","p2.n_all_before2",
-               "p1.n_all_since","p2.n_all_since",
+               "p1.n_all_since","p2.n_all_since1","p2.n_all_since2",
                "p1.n_severe_before","p2.n_severe_before1","p2.n_severe_before2",
-               "p1.n_severe_since","p2.n_severe_since"
+               "p1.n_severe_since","p2.n_severe_since1","p2.n_severe_since2"
     )]
     res
 }
@@ -683,15 +692,24 @@ err_report_demographics_site=function(dat.Demographics, site.nm){
     dat.check=dat.site[,c("num_patients_all", "num_patients_ever_severe")]
     err=c(err, any(dat.check[dat.check<0]%in%c(-999,-99)!=1))
     
+    dat.site$num_patients_all[dat.site$num_patients_all<0]=NA
+    dat.site$num_patients_ever_severe[dat.site$num_patients_ever_severe<0]=NA
+    
     tmp0=dat.site[which(dat.site$sex=="all" & dat.site$age_group=="all" & dat.site$race=="all"),]
     tmp1=dat.site[which(dat.site$sex!="all" & dat.site$age_group=="all" & dat.site$race=="all"),]
     tmp2=dat.site[which(dat.site$sex=="all" & dat.site$age_group!="all" & dat.site$race=="all"),]
     tmp3=dat.site[which(dat.site$sex=="all" & dat.site$age_group=="all" & dat.site$race!="all"),]
     
-    err=c(err, any(colSums(tmp0[,-c(1:4)])!=colSums(tmp1[,-c(1:4)])))
-    err=c(err, any(colSums(tmp0[,-c(1:4)])!=colSums(tmp2[,-c(1:4)])))
-    err=c(err, any(colSums(tmp0[,-c(1:4)])!=colSums(tmp3[,-c(1:4)])))
-    
+    for(iit in 1:3){
+      if(iit==1){itmp=tmp1}
+      if(iit==2){itmp=tmp2}
+      if(iit==3){itmp=tmp3}
+      num_patients_all=itmp[,"num_patients_all"]
+      num_patients_ever_severe=itmp[,"num_patients_ever_severe"]
+      ierr.all=ifelse(is.na(sum(num_patients_all)), FALSE, colSums(tmp0[,-c(1:4)])[1]!=sum(num_patients_all))
+      ierr.ever_severe=ifelse(is.na(sum(num_patients_ever_severe)), FALSE, colSums(tmp0[,-c(1:4)])[2]!=sum(num_patients_ever_severe))
+    err=c(err, any(c(ierr.all, ierr.ever_severe)))
+    }
     report=data.frame(site.nm, label=err.label, err)
     
     err.report=report[report[,"err"]==T,c("site.nm", "label")]
