@@ -23,7 +23,7 @@ The R library (`FourCePhase2.1Data`) in this repository contains functions that 
   + if there is missing demographic groups (e.g., missing age group); 
   + if there is negative patient numbres or counts; 
   + if there is number of all patients less than the number of severe patients. 
-  + if the sum of different demopgrahic groups is equal to the patient numbers for "all". 
+  + if the sum of different demopgrahic groups is equal to the patient numbers for "all". Please note the QC only checks the groups without obfuscation (-99). For example, if the number of patients in age_group "0to25" is -99, then the QC will not check if the sum of all age_group is equal to the patient numbers for "all".
 + Medications and Diagnoses:
   + if there is any code not belong to the list of medclass or ICD codes; 
   + if there is negative patient numbers or counts; 
@@ -44,15 +44,13 @@ The R library (`FourCePhase2.1Data`) in this repository contains functions that 
   + if n_all_before, n_all_since, n_severe_before, n_severe_since are different between phase2.1 and phase1.1;
 + Labs:
   + if there is duplicated row for the same lab on the same day but with different counts/measures;
-  + if there is any LOINC codes not belong to the Phase1.1 LOINC list;
-  + if n_all, mean_all, stdev_all, n_severe, mean_severe, stdev_severe are different between phase2.1 and phase1.1;
+  + if n_all, mean_all, stdev_all, n_severe, mean_severe, stdev_severe at day0 are different between phase2.1 and phase1.1. Because the definitions of the date at admission are slightly different between Phase1.1 and Phase2.1, an error of less than 1% is allowed. For example, n_all from phase1.1 should be within the range (0.99n_all,1.01n_all) from phase2.1
 + Medications:
   + if there is duplicated row for the same MEDCLASS on the same day but with different counts;
-  + if there is any MEDCLASS not belong to the Phase1.1 MEDCLASS list;
-  + if n_all_before, n_all_since, n_severe_before, n_severe_since are different between phase2.1 and phase1.1;
+  + if n_all_before, n_all_since, n_severe_before, n_severe_since are different between phase2.1 and phase1.1. Because the definitions of the date at admission are slightly different between Phase1.1 and Phase2.1, an one day leevay is allowed. For example, n_all_since from phase1.1 should be within the range (n_all for day>0, n_all for day>=0) from phase2.1. 
 + Diagnoses:
   + if there is duplicated row for the same ICD code on the same day but with different counts;
-  + if n_all_before, n_all_since, n_severe_before, n_severe_since are different between phase2.1 and phase1.1; 
+  + if n_all_before, n_all_since, n_severe_before, n_severe_since are different between phase2.1 and phase1.1. Because the definitions of the date at admission are slightly different between Phase1.1 and Phase2.1, an one day leevay is allowed. For example, n_all_since from phase1.1 should be within the range (n_all for day>0, n_all for day>=0) from phase2.1. 
 + ClinicalCourse:
   + if there is duplicated row for days_since_admission but with different counts;
   + if num_patients_all_still_in_hospital, num_patients_ever_severe_still_in_hospital are different between phase2.1 and phase1.1; 
