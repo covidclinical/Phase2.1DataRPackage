@@ -24,7 +24,7 @@ runQC <- function(siteid){
   rtffile <- RTF(file.nm1)  
   phase1.1.res=runQC_Phase1.1_report(rtffile, phase1.DailyCounts,phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir,site.nm=siteid)
   done(rtffile)
-  nm.res.print=c("Demographics", "ClinicalCourse", "DailyCounts", "Crossover", "Diagnoses", "Medications", "Labs", "Lab units")
+  nm.res.print=c("Column Names", "Demographics", "ClinicalCourse", "DailyCounts", "Crossover", "Diagnoses", "Medications", "Labs", "Lab units")
   is.error1=0
   for(ii in 1:length(phase1.1.res)){
     nm=names(phase1.1.res)[ii]

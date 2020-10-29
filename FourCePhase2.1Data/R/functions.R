@@ -3,6 +3,17 @@ runQC_Phase2.1_report=function(rtffile,phase2.ClinicalCourse, phase2.PatientObse
   tryCatch(addParagraph(rtffile, "Phase2.1 QC Report\n"), error=function(e) NA)
   tryCatch(addParagraph(rtffile, paste0(Sys.Date(),"\n")), error=function(e) NA)
   addParagraph(rtffile, paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"))
+  print("Checking Phase2.1 Column Names ...")
+  Phase2QC_colnames=err_report_colnames_site.phase2(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary,site.nm)
+
+  tryCatch(addParagraph(rtffile, "Column names\n"), error=function(e) NA)
+  if(dim(Phase2QC_colnames$err.report)[1]!=0){
+    tryCatch(addTable(rtffile, as.data.frame(Phase2QC_colnames$err.report)), error=function(e) NA)
+    stop(Phase2QC_colnames$err.report$label)
+    }else{
+      addParagraph(rtffile, "no issue identified\n")
+    }
+  addParagraph(rtffile, paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"))
   Phase2QC_Tab_Labs=runQC_tab_lab(rtffile, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Labs, output.dir)
   addParagraph(rtffile, paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"))
   Phase2QC_Tab_Medications=runQC_tab_med(rtffile, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Medications, output.dir)
@@ -17,6 +28,7 @@ runQC_Phase2.1_report=function(rtffile,phase2.ClinicalCourse, phase2.PatientObse
 
 runQC_Phase1.1_report=function(rtffile,phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir, site.nm){
   qc.res=qc_site(phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, site.nm)
+  colnames(qc.res$qc.colnames$err.report)=
   colnames(qc.res$qc.dm$err.report)=
     colnames(qc.res$qc.cc$err.report)=
     colnames(qc.res$qc.dc$err.report)=
@@ -29,6 +41,11 @@ runQC_Phase1.1_report=function(rtffile,phase1.DailyCounts, phase1.ClinicalCourse
   
   tryCatch(addParagraph(rtffile, "Phase1.1 QC Report\n"), error=function(e) NA)
   tryCatch(addParagraph(rtffile, paste0(Sys.Date(),"\n")), error=function(e) NA)
+  tryCatch(addParagraph(rtffile, "Column names\n"), error=function(e) NA)
+  if(dim(qc.res$qc.colnames$err.report)[1]!=0){
+    tryCatch(addTable(rtffile, as.data.frame(qc.res$qc.colnames$err.report)), error=function(e) NA)}else{
+      addParagraph(rtffile, "no issue identified\n")
+    }
   tryCatch(addParagraph(rtffile, "Demographics\n"), error=function(e) NA)
   if(dim(qc.res$qc.dm$err.report)[1]!=0){
     tryCatch(addTable(rtffile, as.data.frame(qc.res$qc.dm$err.report)), error=function(e) NA)}else{
@@ -71,6 +88,8 @@ runQC_Phase1.1_report=function(rtffile,phase1.DailyCounts, phase1.ClinicalCourse
     }
   qc.res
 }
+
+
 
 runQC_tab_lab <- function(rtffile, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Labs, output.dir) {
   print("Checking Phase2.1 Labs ...")
@@ -658,6 +677,8 @@ tab_compare_dc=function(phase2.ClinicalCourse, phase1.DailyCounts){
 qc_site=function(phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, site.nm){
   data(icd.list, package="FourCePhase2.1Data")
   data(lab.range, package="FourCePhase2.1Data")
+    qc.colnames=err_report_colnames_site.phase1(phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, site.nm)
+    if(dim(qc.colnames$err.report)[1]!=0){stop(qc.colnames$err.report[,2])}
     qc.dm=err_report_demographics_site(phase1.Demographics, site.nm)
     qc.cc=err_report_clinicalcourse_site(phase1.ClinicalCourse, site.nm)
     qc.dc=err_report_dailycounts_site(phase1.DailyCounts, site.nm)
@@ -666,8 +687,82 @@ qc_site=function(phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,
     qc.med=err_report_med_site(phase1.ClinicalCourse, phase1.Demographics, phase1.DailyCounts, phase1.Medications, site.nm)
     qc.lab=err_report_lab_site(phase1.ClinicalCourse, phase1.Demographics, phase1.DailyCounts, phase1.Labs, site.nm)
     qc.lab.unit=err_report_lab_unit_site(phase1.Labs, lab.range, site.nm)
-    list(qc.dm=qc.dm, qc.cc=qc.cc, qc.dc=qc.dc, qc.crossover=qc.crossover, qc.icd=qc.icd, qc.med=qc.med, qc.lab=qc.lab, qc.lab.unit=qc.lab.unit)
+    list(qc.colnames=qc.colnames,qc.dm=qc.dm, qc.cc=qc.cc, qc.dc=qc.dc, qc.crossover=qc.crossover, qc.icd=qc.icd, qc.med=qc.med, qc.lab=qc.lab, qc.lab.unit=qc.lab.unit)
 }
+
+err_report_colnames_site.phase1=function(phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, site.nm){
+  
+  file.nms=
+    c("phase1.DailyCounts",
+      "phase1.ClinicalCourse",
+      "phase1.Demographics",
+      "phase1.Diagnoses",
+      "phase1.Labs",
+      "phase1.Medications"
+    )
+  col.nms=NULL
+  col.nms[[file.nms[1]]]=c("siteid","calendar_date" ,"cumulative_patients_all","cumulative_patients_severe","cumulative_patients_dead","num_patients_in_hospital_on_this_date","num_patients_in_hospital_and_severe_on_this_date")
+  col.nms[[file.nms[2]]]=c("siteid","days_since_admission","num_patients_all_still_in_hospital","num_patients_ever_severe_still_in_hospital")
+  col.nms[[file.nms[3]]]=c("siteid","sex","age_group","race","num_patients_all","num_patients_ever_severe")
+  col.nms[[file.nms[4]]]=c("siteid","icd_code_3chars","icd_version","num_patients_all_before_admission","num_patients_all_since_admission","num_patients_ever_severe_before_admission","num_patients_ever_severe_since_admission")
+  col.nms[[file.nms[5]]]=c("siteid","loinc","days_since_admission","units","num_patients_all","mean_value_all","stdev_value_all","mean_log_value_all","stdev_log_value_all",         
+                           "num_patients_ever_severe",     "mean_value_ever_severe",       "stdev_value_ever_severe",     
+                           "mean_log_value_ever_severe",   "stdev_log_value_ever_severe",  "num_patients_never_severe",  
+                           "mean_value_never_severe",      "stdev_value_never_severe",     "mean_log_value_never_severe", 
+                           "stdev_log_value_never_severe")
+  col.nms[[file.nms[6]]]=c("siteid","med_class","num_patients_all_before_admission","num_patients_all_since_admission","num_patients_ever_severe_before_admission","num_patients_ever_severe_since_admission")
+
+  err.label=paste0("wrong/missing column names for ", file.nms, "; column names should be: ", unlist(lapply(col.nms, function(xx) paste(xx,collapse=";"))))
+  
+  
+  err=NULL
+  for(file.nm in file.nms){
+    file.check=get(file.nm)
+    file.col.nm=tolower(colnames(file.check))
+    bench.col.nm=col.nms[[file.nm]]
+    if(length(file.col.nm)!=length(bench.col.nm)){err=c(err,1)}else{
+    if(length(file.col.nm)==length(bench.col.nm)){
+    err=c(err,sum(file.col.nm!=col.nms[[file.nm]]))
+    }
+    }
+  }
+  report=data.frame(site.nm, label=err.label, err)
+  err.report=report[report[,"err"]==T,c("site.nm", "label")]
+  list(err.report=err.report, err.label=err.label)
+}
+
+err_report_colnames_site.phase2=function(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary,site.nm){
+  
+  file.nms=
+    c("phase2.ClinicalCourse",
+      "phase2.PatientObservations",
+      "phase2.PatientSummary"
+    )
+  col.nms=NULL
+  col.nms[[file.nms[1]]]=c("siteid","patient_num","days_since_admission","calendar_date","in_hospital","severe","deceased")
+  col.nms[[file.nms[2]]]=c("siteid","patient_num","days_since_admission","concept_type","concept_code","value")
+  col.nms[[file.nms[3]]]=c("siteid", "patient_num", "admission_date","days_since_admission","last_discharge_date","still_in_hospital","severe_date","severe",             
+                           "death_date","deceased","sex","age_group","race","race_collected")
+  
+  err.label=paste0("wrong/missing column names for ", file.nms, "; column names should be: ", unlist(lapply(col.nms, function(xx) paste(xx,collapse=";"))))
+  
+  
+  err=NULL
+  for(file.nm in file.nms){
+    file.check=get(file.nm)
+    file.col.nm=tolower(colnames(file.check))
+    bench.col.nm=col.nms[[file.nm]]
+    if(length(file.col.nm)!=length(bench.col.nm)){err=c(err,1)}else{
+      if(length(file.col.nm)==length(bench.col.nm)){
+        err=c(err,sum(file.col.nm!=col.nms[[file.nm]]))
+      }
+    }
+  }
+  report=data.frame(site.nm, label=err.label, err)
+  err.report=report[report[,"err"]==T,c("site.nm", "label")]
+  list(err.report=err.report, err.label=err.label)
+}
+
 err_report_demographics_site=function(dat.Demographics, site.nm){
     err.label=
         c("missing (sex,age,race)=all",
