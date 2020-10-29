@@ -232,8 +232,8 @@ runQC_tab_cc <- function(rtffile, phase2.ClinicalCourse, phase1.ClinicalCourse, 
     tryCatch(addParagraph(rtffile, paste0(paste(nm.duplicated,collapse=";"), "\n")), error=function(e) NA)}else{
       addParagraph(rtffile, "no issue identified\n")
     }
-  for (nm in c("num_patients_all_still_in_hospital", "num_patients_all_still_in_hospital", 
-               "num_patients_ever_severe_still_in_hospital", "num_patients_ever_severe_still_in_hospital")){
+  for (nm in c("num_patients_all_still_in_hospital",
+               "num_patients_ever_severe_still_in_hospital")){
     nm1=paste0("p1.", nm)
     nm2=paste0("p2.", nm)
     nm.check=paste0("nm.diff.",nm)
