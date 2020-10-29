@@ -710,9 +710,7 @@ err_report_colnames_site.phase1=function(phase1.DailyCounts, phase1.ClinicalCour
   col.nms[[file.nms[4]]]=c("siteid","icd_code_3chars","icd_version","num_patients_all_before_admission","num_patients_all_since_admission","num_patients_ever_severe_before_admission","num_patients_ever_severe_since_admission")
   col.nms[[file.nms[5]]]=c("siteid","loinc","days_since_admission","units","num_patients_all","mean_value_all","stdev_value_all","mean_log_value_all","stdev_log_value_all",         
                            "num_patients_ever_severe",     "mean_value_ever_severe",       "stdev_value_ever_severe",     
-                           "mean_log_value_ever_severe",   "stdev_log_value_ever_severe",  "num_patients_never_severe",  
-                           "mean_value_never_severe",      "stdev_value_never_severe",     "mean_log_value_never_severe", 
-                           "stdev_log_value_never_severe")
+                           "mean_log_value_ever_severe",   "stdev_log_value_ever_severe")
   col.nms[[file.nms[6]]]=c("siteid","med_class","num_patients_all_before_admission","num_patients_all_since_admission","num_patients_ever_severe_before_admission","num_patients_ever_severe_since_admission")
 
   err.label=paste0("wrong/missing column names for ", file.nms, "; column names should be: ", unlist(lapply(col.nms, function(xx) paste(xx,collapse=";"))))
