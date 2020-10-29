@@ -201,6 +201,7 @@ runQC_tab_dem <- function(rtffile, phase2.PatientSummary, phase2.PatientObservat
     tryCatch(addParagraph(rtffile, paste0(paste(nm.duplicated,collapse=";"), "\n")), error=function(e) NA)}else{
       addParagraph(rtffile, "no issue identified\n")
     }
+  nm.group.all=NULL
   for (nm in c("n_all",  "n_severe")){
     nm1=paste0("p1.", nm)
     nm2=paste0("p2.", nm)
@@ -209,12 +210,14 @@ runQC_tab_dem <- function(rtffile, phase2.PatientSummary, phase2.PatientObservat
     tryCatch(addParagraph(rtffile, paste0("Demographic Group with Different ", nm, " between Phase1.1 and Phase2.1:")), error=function(e) NA)
     if(dim(nm.group)[1]!=0){
       nm.group=unlist(lapply(1:dim(nm.group)[1], function(ll) paste(paste0(colnames(nm.group),"=",nm.group[ll,]),collapse=":")))
+      nm.group.all=c(nm.group.all,nm.group)
       print(paste0("Demographic Group with Different ", nm, " between Phase1.1 and Phase2.1: ", paste(nm.group, collapse=';')))
       tryCatch(addParagraph(rtffile, paste0(paste(nm.group,collapse=";"),"\n")), error=function(e) NA)}else{
         addParagraph(rtffile, "no issue identified\n")
       }
   }
-  is.error=any(is.na(c(nm.group[1,1],nm.duplicated[1,1]))!=1)
+  if(is.null(nm.group.all)){nm.group.all=NA}
+  is.error=any(is.na(c(nm.group.all,nm.duplicated[1,1]))!=1)
   is.error
 }
 
