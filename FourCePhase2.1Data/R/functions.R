@@ -711,6 +711,12 @@ err_report_colnames_site.phase1=function(phase1.DailyCounts, phase1.ClinicalCour
   col.nms[[file.nms[5]]]=c("siteid","loinc","days_since_admission","units","num_patients_all","mean_value_all","stdev_value_all","mean_log_value_all","stdev_log_value_all",         
                            "num_patients_ever_severe",     "mean_value_ever_severe",       "stdev_value_ever_severe",     
                            "mean_log_value_ever_severe",   "stdev_log_value_ever_severe")
+  if(site.nm%in%c("MGB", "MGBPED")){
+    col.nms[[file.nms[5]]]=c(
+    "siteid","loinc","days_since_admission","units","num_patients_all","mean_value_all","stdev_value_all","mean_log_value_all","stdev_log_value_all",
+    "num_patients_ever_severe","mean_value_ever_severe","stdev_value_ever_severe","mean_log_value_ever_severe","stdev_log_value_ever_severe","num_patients_never_severe","mean_value_never_severe","stdev_value_never_severe",
+    "mean_log_value_never_severe","stdev_log_value_never_severe")}
+    
   col.nms[[file.nms[6]]]=c("siteid","med_class","num_patients_all_before_admission","num_patients_all_since_admission","num_patients_ever_severe_before_admission","num_patients_ever_severe_since_admission")
 
   err.label=paste0("wrong/missing column names for ", file.nms, "; column names should be: ", unlist(lapply(col.nms, function(xx) paste(xx,collapse=";"))))
@@ -768,10 +774,7 @@ err_report_demographics_site=function(dat.Demographics, site.nm){
     err.label=
         c("missing (sex,age,race)=all",
           "N_all<N_ever_severe",
-          "negative N (not -999 or -99)",
-          "sum of different sex groups not equal to sex='all')",
-          "sum of different age groups not equal to age_group='all')",
-          "sum of different race groups not equal to race='all')"
+          "negative N (not -999 or -99)"
         )
     
     err=NULL
@@ -791,21 +794,6 @@ err_report_demographics_site=function(dat.Demographics, site.nm){
     dat.site$num_patients_all[dat.site$num_patients_all<0]=NA
     dat.site$num_patients_ever_severe[dat.site$num_patients_ever_severe<0]=NA
     
-    tmp0=dat.site[which(dat.site$sex=="all" & dat.site$age_group=="all" & dat.site$race=="all"),]
-    tmp1=dat.site[which(dat.site$sex!="all" & dat.site$age_group=="all" & dat.site$race=="all"),]
-    tmp2=dat.site[which(dat.site$sex=="all" & dat.site$age_group!="all" & dat.site$race=="all"),]
-    tmp3=dat.site[which(dat.site$sex=="all" & dat.site$age_group=="all" & dat.site$race!="all"),]
-    
-    for(iit in 1:3){
-      if(iit==1){itmp=tmp1}
-      if(iit==2){itmp=tmp2}
-      if(iit==3){itmp=tmp3}
-      num_patients_all=itmp[,"num_patients_all"]
-      num_patients_ever_severe=itmp[,"num_patients_ever_severe"]
-      ierr.all=ifelse(is.na(sum(num_patients_all)), FALSE, colSums(tmp0[,-c(1:4)])[1]!=sum(num_patients_all))
-      ierr.ever_severe=ifelse(is.na(sum(num_patients_ever_severe)), FALSE, colSums(tmp0[,-c(1:4)])[2]!=sum(num_patients_ever_severe))
-    err=c(err, any(c(ierr.all, ierr.ever_severe)))
-    }
     report=data.frame(site.nm, label=err.label, err)
     
     err.report=report[report[,"err"]==T,c("site.nm", "label")]
@@ -972,7 +960,7 @@ err_report_lab_site=function(dat.ClinicalCourse, dat.Demographics, dat.DailyCoun
     err.label=c(
         "N_all > N_all at day0",
         "N_all < N_ever_severe",
-        "negative N (not -999 or -99)",
+        "negative N (not -999 or -99), or missing values",
         "day 0+ not included",
         "Inf or -Inf",
         "N_ever_severe (in DailyCount)<N_ever_severe (in Labs) for lab")
