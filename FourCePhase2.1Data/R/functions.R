@@ -218,10 +218,11 @@ runQC_tab_dem <- function(rtffile, phase2.PatientSummary, phase2.PatientObservat
         addParagraph(rtffile, "no issue identified\n")
       }
   }
-  }
+  
   if(is.null(nm.group.all)){nm.group.all=NA}
   is.error=any(is.na(c(nm.group.all,nm.duplicated[1,1]))!=1)
   is.error
+  }
 }
 
 runQC_tab_cc <- function(rtffile, phase2.ClinicalCourse, phase1.ClinicalCourse, output.dir) {
