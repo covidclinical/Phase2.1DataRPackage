@@ -9,7 +9,7 @@ runQC_Phase2.1_report=function(rtffile,phase2.ClinicalCourse, phase2.PatientObse
   tryCatch(addParagraph(rtffile, "Column names\n"), error=function(e) NA)
   if(dim(Phase2QC_colnames$err.report)[1]!=0){
     tryCatch(addTable(rtffile, as.data.frame(Phase2QC_colnames$err.report)), error=function(e) NA)
-    stop(Phase2QC_colnames$err.report$label)
+    #stop(Phase2QC_colnames$err.report$label)
     }else{
       addParagraph(rtffile, "no issue identified\n")
     }
@@ -110,7 +110,7 @@ runQC_tab_lab <- function(rtffile, phase2.ClinicalCourse, phase2.PatientObservat
     nm1=paste0("p1.", nm)
     nm2=paste0("p2.", nm)
     nm.check=paste0("nm.diff.",nm)
-    nm.labname=unique(res[which(round(res[,nm1],5)>round(res[,nm2]+res[,nm2]*0.01,5)|round(res[,nm1],5)<round(res[,nm2]-res[,nm2]*0.01,5)),"labname"])
+    nm.labname=unique(res[which(round(res[,nm1],5)>round(res[,nm2]+res[,nm2]*0.025,5)|round(res[,nm1],5)<round(res[,nm2]-res[,nm2]*0.025,5)),"labname"])
     tryCatch(addParagraph(rtffile, paste0("Labs with Different ", nm, " between Phase1.1 and Phase2.1:")), error=function(e) NA)
     if(length(nm.labname)!=0){
       print(paste0("Labs with Different ", nm, " between Phase1.1 and Phase2.1: ", nm.labname))
@@ -143,7 +143,7 @@ runQC_tab_med <- function(rtffile, phase2.ClinicalCourse, phase2.PatientObservat
     nm2.2=paste0("p2.", nm, "2")
     
     nm.check=paste0("nm.diff.",nm)
-    nm.medclass=unique(res[which(res[,nm1]<res[,nm2.1]|res[,nm1]>res[,nm2.2]),"medclass"])
+    nm.medclass=unique(res[which(res[,nm1]<(res[,nm2.1]*0.975)|res[,nm1]>(res[,nm2.2]*1.025)),"medclass"])
     
     nm.medclass.all=c(nm.medclass.all, nm.medclass)
     tryCatch(addParagraph(rtffile, paste0("Medclass with Different ", nm, " between Phase1.1 and Phase2.1:")), error=function(e) NA)
@@ -175,7 +175,7 @@ runQC_tab_diag <- function(rtffile, phase2.ClinicalCourse, phase2.PatientObserva
     nm2.2=paste0("p2.", nm,2)
     
     nm.check=paste0("nm.diff.",nm)
-    nm.medclass=unique(res[which(res[,nm1]<res[,nm2.1]|res[,nm1]>res[,nm2.2]),"diag-icd"])
+    nm.medclass=unique(res[which(res[,nm1]<(res[,nm2.1]*0.975)|res[,nm1]>(res[,nm2.2]*1.025)),"diag-icd"])
     
     nm.medclass.all=c(nm.medclass.all, nm.medclass)
     tryCatch(addParagraph(rtffile, paste0("Diagnoses with Different ", nm, " between Phase1.1 and Phase2.1:")), error=function(e) NA)
@@ -241,7 +241,21 @@ runQC_tab_cc <- function(rtffile, phase2.ClinicalCourse, phase1.ClinicalCourse, 
     nm1=paste0("p1.", nm)
     nm2=paste0("p2.", nm)
     nm.check=paste0("nm.diff.",nm)
-    nm.day=unique(res[which(res[,nm1]!=res[,nm2]),c("days_since_admission")])
+    nm.day0=res[res$days_since_admission==0,nm1]!=res[res$days_since_admission==0,nm2]
+    tryCatch(addParagraph(rtffile, paste0("ClinicalCourse with Different total numbers of patients between Phase1.1 and Phase2.1")), error=function(e) NA)
+    if(nm.day0!=0){
+      print(paste0("ClinicalCourse with Different total numbers of patients between Phase1.1 and Phase2.1"))
+      tryCatch(addParagraph(rtffile, paste0(paste0("ClinicalCourse with Different total numbers of patients between Phase1.1 and Phase2.1"),"\n")), error=function(e) NA)}else{
+        addParagraph(rtffile, "no issue identified\n")
+      }
+  }
+  
+  for (nm in c("num_patients_all_still_in_hospital",
+               "num_patients_ever_severe_still_in_hospital")){
+    nm1=paste0("p1.", nm)
+    nm2=paste0("p2.", nm)
+    nm.check=paste0("nm.diff.",nm)
+    nm.day=unique(res[which(abs(res[,nm1]-res[,nm2])>(0.05*res[,nm1])),c("days_since_admission")])
     tryCatch(addParagraph(rtffile, paste0("ClinicalCourse with Different ", nm, " between Phase1.1 and Phase2.1:")), error=function(e) NA)
     if(length(nm.day)!=0){
       print(paste0("ClinicalCourse with Different ", nm, " between Phase1.1 and Phase2.1 on day: ", paste(nm.day,collapse=";")))
@@ -249,7 +263,8 @@ runQC_tab_cc <- function(rtffile, phase2.ClinicalCourse, phase1.ClinicalCourse, 
         addParagraph(rtffile, "no issue identified\n")
       }
   }
-  is.error=length(c(nm.duplicated,nm.day))!=0
+  
+  is.error=(length(c(nm.duplicated,nm.day))+nm.day0)!=0
   is.error
 }
 
