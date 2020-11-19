@@ -20,10 +20,8 @@ runQC <- function(siteid){
   phase2.PatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
   
   # QC for Phase1.1
-  file.nm1=paste0(dir.output, "/Phase1.1DataQCReport.", siteid,".doc")
-  rtffile <- RTF(file.nm1)  
-  phase1.1.res=runQC_Phase1.1_report(rtffile, phase1.DailyCounts,phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir,site.nm=siteid)
-  done(rtffile)
+  file.nm1=paste0(dir.output, "/Phase1.1DataQCReport.", siteid,".txt")
+  phase1.1.res=runQC_Phase1.1_report(file.nm1, phase1.DailyCounts,phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir,site.nm=siteid)
   nm.res.print=c("Column Names", "Demographics", "ClinicalCourse", "DailyCounts", "Crossover", "Diagnoses", "Medications", "Labs", "Lab units")
   is.error1=0
   for(ii in 1:length(phase1.1.res)){
@@ -35,11 +33,8 @@ runQC <- function(siteid){
   }
   
   # QC for Phase2.1
-  file.nm2=paste0(dir.output, "/Phase2.1DataQCReport.", siteid,".doc")
-  rtffile <- RTF(file.nm2)  
-  is.error2=runQC_Phase2.1_report(rtffile,phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir, site.nm=siteid)
-    
-  done(rtffile)
+  file.nm2=paste0(dir.output, "/Phase2.1DataQCReport.", siteid,".txt")
+  is.error2=runQC_Phase2.1_report(file.nm2, phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir, site.nm=siteid)
   
   #if((is.error1+is.error2)!=0){
   #stop('QC isssues identified. Details can be find in "Phase1.1DataQCReport.doc" and "Phase2.1DataQCReport.doc" in the input directory. Please fix all the issues before conducting analysis.')
