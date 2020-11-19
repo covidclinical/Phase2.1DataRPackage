@@ -21,7 +21,7 @@ runQC <- function(siteid){
   
   # QC for Phase1.1
   file.nm1=paste0(dir.output, "/Phase1.1DataQCReport.", siteid,".txt")
-  phase1.1.res=runQC_Phase1.1_report(phase1.DailyCounts,phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir,site.nm=siteid)
+  phase1.1.res=runQC_Phase1.1_report(file.nm1, phase1.DailyCounts,phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir,site.nm=siteid)
   nm.res.print=c("Column Names", "Demographics", "ClinicalCourse", "DailyCounts", "Crossover", "Diagnoses", "Medications", "Labs", "Lab units")
   is.error1=0
   for(ii in 1:length(phase1.1.res)){

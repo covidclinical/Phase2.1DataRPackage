@@ -26,7 +26,7 @@ runQC_Phase2.1_report=function(file.nm2, phase2.ClinicalCourse, phase2.PatientOb
   Phase2QC_Tab_Labs+Phase2QC_Tab_Medications+Phase2QC_Tab_Diagnoses+Phase2QC_Tab_Demographic+Phase2QC_Tab_ClinicalCourse
 }
 
-runQC_Phase1.1_report=function(phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir, site.nm){
+runQC_Phase1.1_report=function(file.nm1, phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir, site.nm){
   qc.res=qc_site(phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, site.nm)
   colnames(qc.res$qc.colnames$err.report)=
   colnames(qc.res$qc.dm$err.report)=
