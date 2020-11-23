@@ -1,35 +1,8 @@
 sink.txt=function(x, file, method=print, append){sink(file, append=append); method(x); sink()}
-runQC_Phase2.1_report=function(file.nm2, phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir, site.nm){
-  tryCatch(sink.txt("Phase2.1 QC Report\n", file=file.nm2, cat, append=F), error=function(e) NA)
-  tryCatch(sink.txt(paste0(Sys.Date(), "\n"), file=file.nm2, cat, append=T), error=function(e) NA)
-  sink.txt(paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
-  print("Checking Phase2.1 Column Names ...")
-  Phase2QC_colnames=err_report_colnames_site.phase2(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary,site.nm)
-
-  tryCatch(sink.txt("Column names\n", file=file.nm2, cat, append=T), error=function(e) NA)
-  if(dim(Phase2QC_colnames$err.report)[1]!=0){
-    tryCatch(sink.txt(as.data.frame(Phase2QC_colnames$err.report)$label, file=file.nm2, print, append=T), error=function(e) NA)
-    #stop(Phase2QC_colnames$err.report$label)
-    }else{
-      sink.txt("no issue identified\n", cat, file=file.nm2,append=T)
-    }
-  sink.txt(paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
-  Phase2QC_Tab_Labs=runQC_tab_lab(file.nm2, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Labs, output.dir)
-  sink.txt(paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
-  Phase2QC_Tab_Medications=runQC_tab_med(file.nm2, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Medications, output.dir)
-  sink.txt(paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2,cat, append=T)
-  Phase2QC_Tab_Diagnoses=runQC_tab_diag(file.nm2, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Diagnoses, output.dir)
-  sink.txt(paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
-  Phase2QC_Tab_Demographic=runQC_tab_dem(file.nm2, phase2.PatientSummary, phase2.PatientObservations, phase1.Demographics, output.dir)
-  sink.txt(paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
-  Phase2QC_Tab_ClinicalCourse=runQC_tab_cc(file.nm2, phase2.ClinicalCourse, phase1.ClinicalCourse, output.dir)
-  Phase2QC_Tab_Labs+Phase2QC_Tab_Medications+Phase2QC_Tab_Diagnoses+Phase2QC_Tab_Demographic+Phase2QC_Tab_ClinicalCourse
-}
-
 runQC_Phase1.1_report=function(file.nm1, phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir, site.nm){
   qc.res=qc_site(phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, site.nm)
   colnames(qc.res$qc.colnames$err.report)=
-  colnames(qc.res$qc.dm$err.report)=
+    colnames(qc.res$qc.dm$err.report)=
     colnames(qc.res$qc.cc$err.report)=
     colnames(qc.res$qc.dc$err.report)=
     colnames(qc.res$qc.crossover$err.report)=
@@ -90,6 +63,45 @@ runQC_Phase1.1_report=function(file.nm1, phase1.DailyCounts, phase1.ClinicalCour
 }
 
 
+runQC_Phase2.1_report=function(file.nm2, phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary, phase1.DailyCounts, phase1.ClinicalCourse, phase1.Demographics,phase1.Diagnoses, phase1.Labs, phase1.Medications, output.dir, site.nm){
+  tryCatch(sink.txt("Phase2.1 QC Report\n", file=file.nm2, cat, append=F), error=function(e) NA)
+  tryCatch(sink.txt(paste0(Sys.Date(), "\n"), file=file.nm2, cat, append=T), error=function(e) NA)
+  sink.txt(paste0("\n+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
+  sink.txt(paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
+  
+  print("Checking Phase2.1 Column Names ...")
+  Phase2QC_colnames=err_report_colnames_site.phase2(phase2.ClinicalCourse, phase2.PatientObservations, phase2.PatientSummary,site.nm)
+
+  tryCatch(sink.txt("1. Column names\n", file=file.nm2, cat, append=T), error=function(e) NA)
+  if(dim(Phase2QC_colnames$err.report)[1]!=0){
+    tryCatch(sink.txt(paste(as.data.frame(Phase2QC_colnames$err.report)$label, collapse=";\n"), file=file.nm2, cat, append=T), error=function(e) NA)
+    #stop(Phase2QC_colnames$err.report$label)
+    }else{
+      sink.txt("no issue identified\n", cat, file=file.nm2,append=T)
+    }
+  sink.txt(paste0("\n\n+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
+  sink.txt(paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
+  
+  Phase2QC_Tab_Labs=runQC_tab_lab(file.nm2, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Labs, output.dir)
+  sink.txt(paste0("\n\n+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
+  sink.txt(paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
+  
+  Phase2QC_Tab_Medications=runQC_tab_med(file.nm2, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Medications, output.dir)
+  sink.txt(paste0("\n\n+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2,cat, append=T)
+  sink.txt(paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2,cat, append=T)
+  
+  Phase2QC_Tab_Diagnoses=runQC_tab_diag(file.nm2, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Diagnoses, output.dir)
+  sink.txt(paste0("\n\n+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
+  sink.txt(paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
+  
+  Phase2QC_Tab_Demographic=runQC_tab_dem(file.nm2, phase2.PatientSummary, phase2.PatientObservations, phase1.Demographics, output.dir)
+  sink.txt(paste0("\n\n+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
+  sink.txt(paste0("+++++++++++++++++++++++++++++++++++++++++++++++\n"), file=file.nm2, cat, append=T)
+  
+  Phase2QC_Tab_ClinicalCourse=runQC_tab_cc(file.nm2, phase2.ClinicalCourse, phase1.ClinicalCourse, output.dir)
+  Phase2QC_Tab_Labs+Phase2QC_Tab_Medications+Phase2QC_Tab_Diagnoses+Phase2QC_Tab_Demographic+Phase2QC_Tab_ClinicalCourse
+}
+
 
 runQC_tab_lab <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObservations, phase1.Labs, output.dir) {
   print("Checking Phase2.1 Labs ...")
@@ -97,26 +109,36 @@ runQC_tab_lab <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObserva
  
   res=junk$res
   nm.duplicated=res[duplicated(res[,"labname"]),c("labname")]
-  tryCatch(sink.txt("Labs\n", file=file.nm2, cat, append=T), error=function(e) NA)
+  tryCatch(sink.txt("2. Labs\n", file=file.nm2, cat, append=T), error=function(e) NA)
   tryCatch(sink.txt("Duplicated rows:", file=file.nm2, cat, append=T), error=function(e) NA)
   if(length(nm.duplicated)!=0){
     print(paste0("Duplicated rows for: ", paste(nm.duplicated,collapse=";")))
     tryCatch(sink.txt(paste0(paste(nm.duplicated,collapse=";"), "\n"), file=file.nm2, cat, append=T), error=function(e) NA)}else{
-      sink.txt("no issue identified\n", file=file.nm2, cat, append=T)
+      sink.txt("no issue identified", file=file.nm2, cat, append=T)
     }
+  sink.txt("\n+++++++++++++++++++++++++++++++++++++++++++++++\n", file=file.nm2, cat, append=T)
   
+  nm.labname=NULL
   for (nm in c("n_all", "mean_all", "stdev_all",
                "n_severe", "mean_severe", "stdev_severe")){
     nm1=paste0("p1.", nm)
     nm2=paste0("p2.", nm)
     nm.check=paste0("nm.diff.",nm)
-    nm.labname=unique(res[which(round(res[,nm1],5)>round(res[,nm2]+res[,nm2]*0.025,5)|round(res[,nm1],5)<round(res[,nm2]-res[,nm2]*0.025,5)),"labname"])
-    tryCatch(sink.txt(paste0("Labs with Different ", nm, " between Phase1.1 and Phase2.1:"), file=file.nm2, cat, append=T), error=function(e) NA)
-    if(length(nm.labname)!=0){
-      print(paste0("Labs with Different ", nm, " between Phase1.1 and Phase2.1: ", nm.labname))
-      tryCatch(sink.txt(paste0(paste(nm.labname,collapse=";"),"\n"), file=file.nm2, cat, append=T), error=function(e) NA)}else{
+    range.LB=round(res[,nm2]-res[,nm2]*0.025,5)
+    range.UB=round(res[,nm2]+res[,nm2]*0.025,5)
+    id.issue=which(round(res[,nm1],5)>range.UB|round(res[,nm1],5)<range.LB)
+    tryCatch(sink.txt(paste0("Labs with Different ", nm, " between Phase1.1 and Phase2.1:\n"), file=file.nm2, cat, append=T), error=function(e) NA)
+    if(length(id.issue)!=0){
+      res.print=data.frame(res[id.issue,c("labname",nm1, nm2)], range.LB[id.issue], range.UB[id.issue])
+      colnames(res.print)=c("labname", "phase1", "phase2", "phase2.rangeL", "phase2.rangeU")
+      rownames(res.print)=NULL
+      print(paste0("Labs with Different ", nm, " between Phase1.1 and Phase2.1: "))
+      print(res.print)
+      tryCatch(sink.txt(paste(apply(res.print,1, function(ll) paste0(paste(paste0(colnames(res.print), "=", ll),collapse="; "), "\n+++++++++++++++++++++++++++++++++++++++++++++++\n")),collapse=""), file=file.nm2, cat, append=T), error=function(e) NA)
+      }else{
         sink.txt("no issue identified\n", file=file.nm2, cat, append=T)
       }
+    nm.labname=c(nm.labname, res[id.issue,"labname"])
   }
   is.error=length(c(nm.labname,nm.duplicated))!=0
   is.error
@@ -128,30 +150,43 @@ runQC_tab_med <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObserva
   res=junk$res
 
   nm.duplicated=res[duplicated(res[,"medclass"]),c("medclass")]
-  tryCatch(sink.txt("Medications\n", file=file.nm2, cat, append=T), error=function(e) NA)
-  tryCatch(sink.txt("Duplicated rows:", file=file.nm2, cat, append=T), error=function(e) NA)
+  tryCatch(sink.txt("3. Medications\n", file=file.nm2, cat, append=T), error=function(e) NA)
+  tryCatch(sink.txt("Duplicated rows: ", file=file.nm2, cat, append=T), error=function(e) NA)
   if(length(nm.duplicated)!=0){
-    print(paste0("Duplicated rows for : ", paste(nm.duplicated, collapse=";")))
-    tryCatch(sink.txt(paste0(paste(nm.duplicated,collapse=";"), "\n"), file=file.nm2, cat, append=T), error=function(e) NA)}else{
-      sink.txt("no issue identified\n", file=file.nm2, cat, append=T)
+    print(paste0("Duplicated rows for : ", paste(nm.duplicated, collapse="; ")))
+    tryCatch(sink.txt(paste(paste0(paste(nm.duplicated,collapse=";"), "\n"), collapse=""), file=file.nm2, cat, append=T), error=function(e) NA)}else{
+      sink.txt("no issue identified", file=file.nm2, cat, append=T)
     }
+  sink.txt("\n+++++++++++++++++++++++++++++++++++++++++++++++\n", file=file.nm2, cat, append=T)
+  
   
   nm.medclass.all=NULL
   for (nm in c("n_all_before", "n_all_since", "n_severe_before", "n_severe_since")){
     nm1=paste0("p1.", nm)
+    if(grepl("before", nm)){nm2=paste0("p2.",nm, "0")}
+    if(grepl("since", nm)){nm2=paste0("p2.",nm, "2")}
+    
     nm2.1=paste0("p2.", nm, "1")
     nm2.2=paste0("p2.", nm, "2")
     
     nm.check=paste0("nm.diff.",nm)
-    nm.medclass=unique(res[which(res[,nm1]<(res[,nm2.1]*0.975)|res[,nm1]>(res[,nm2.2]*1.025)),"medclass"])
     
-    nm.medclass.all=c(nm.medclass.all, nm.medclass)
-    tryCatch(sink.txt(paste0("Medclass with Different ", nm, " between Phase1.1 and Phase2.1:"), file=file.nm2, cat, append=T), error=function(e) NA)
-    if(length(nm.medclass)!=0){
-      print(paste0("Medclass with Different ", nm, " between Phase1.1 and Phase2.1: ", paste(nm.medclass, collapse=";")))
-      tryCatch(sink.txt(paste0(paste(nm.medclass,collapse=";"),"\n"), file=file.nm2, cat, append=T), error=function(e) NA)}else{
-        sink.txt("no issue identified\n", file=file.nm2, cat, append=T)
+    range.LB=(res[,nm2.1]*0.975)
+    range.UB=(res[,nm2.2]*1.025)
+    id.issue=which(res[,nm1]<range.LB|res[,nm1]>range.UB)
+    
+    tryCatch(sink.txt(paste0("Medclass with different ", nm, " between Phase1.1 and Phase2.1:\n"), file=file.nm2, cat, append=T), error=function(e) NA)
+    if(length(id.issue)!=0){
+      res.print=data.frame(res[id.issue,c("medclass", nm1, nm2)], range.LB[id.issue], range.UB[id.issue])
+      colnames(res.print)=c("medclass", "phase1", "phase2", "phase2.rangeL", "phase2.rangeU")
+      print(paste0("Medclass with Different ", nm, " between Phase1.1 and Phase2.1: "))
+      print(res.print)
+      tryCatch(sink.txt(paste(apply(res.print,1, function(ll) paste(paste0(colnames(res.print), "=", ll),collapse="; ")), collapse="\n"), file=file.nm2, cat, append=T), error=function(e) NA)
+      }else{
+        sink.txt("no issue identified", file=file.nm2, cat, append=T)
       }
+    sink.txt("\n+++++++++++++++++++++++++++++++++++++++++++++++\n", file=file.nm2, cat, append=T)
+    nm.medclass.all=c(nm.medclass.all, res[id.issue,"medclass"])
   }
   is.error=length(c(nm.medclass.all,nm.duplicated))!=0
   is.error
@@ -161,29 +196,40 @@ runQC_tab_diag <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObserv
   print("Checking Phase2.1 Diagnoses")
   res=tab_compare_diag(phase2.PatientObservations, phase2.ClinicalCourse, phase1.Diagnoses)
   nm.duplicated=res[duplicated(res[,"diag-icd"]),c("diag-icd")]
-  tryCatch(sink.txt("Diagnoses\n", file=file.nm2, cat, append=T), error=function(e) NA)
+  tryCatch(sink.txt("4. Diagnoses\n", file=file.nm2, cat, append=T), error=function(e) NA)
   tryCatch(sink.txt("Duplicated rows:", file=file.nm2, cat, append=T), error=function(e) NA)
   if(length(nm.duplicated)!=0){
     print(paste0("Duplicated rows for: ", nm.duplicated))
     tryCatch(sink.txt(paste0(paste(nm.duplicated,collapse=";"), "\n"), file=file.nm2, cat, append=T), error=function(e) NA)}else{
-      sink.txt("no issue identified\n", file=file.nm2, cat, append=T)
+      sink.txt("no issue identified", file=file.nm2, cat, append=T)
     }
+  sink.txt("\n+++++++++++++++++++++++++++++++++++++++++++++++\n", file=file.nm2, cat, append=T)
+  
   nm.medclass.all=NULL
   for (nm in c("n_all_before", "n_all_since", "n_severe_before", "n_severe_since")){
     nm1=paste0("p1.", nm)
+    if(grepl("before", nm)){nm2=paste0("p2.", nm, 0)}
+    if(grepl("since", nm)){nm2=paste0("p2.", nm, 2)}
+    
     nm2.1=paste0("p2.", nm,1)
     nm2.2=paste0("p2.", nm,2)
     
     nm.check=paste0("nm.diff.",nm)
-    nm.medclass=unique(res[which(res[,nm1]<(res[,nm2.1]*0.975)|res[,nm1]>(res[,nm2.2]*1.025)),"diag-icd"])
-    
-    nm.medclass.all=c(nm.medclass.all, nm.medclass)
+    range.LB=(res[,nm2.1]*0.975)
+    range.UB=(res[,nm2.2]*1.025)
+    id.issue=which(res[,nm1]<range.LB|res[,nm1]>range.UB)
+
     tryCatch(sink.txt(paste0("Diagnoses with Different ", nm, " between Phase1.1 and Phase2.1:"), file=file.nm2, cat, append=T), error=function(e) NA)
-    if(length(nm.medclass)!=0){
-      print(paste0("Diagnoses with Different ", nm, " between Phase1.1 and Phase2.1: ", nm.medclass))
-      tryCatch(sink.txt(paste0(paste(nm.medclass,collapse=";"),"\n"), file=file.nm2, cat, append=T), error=function(e) NA)}else{
-        sink.txt("no issue identified\n", file=file.nm2, cat, append=T)
-      }
+    if(length(id.issue)!=0){
+      res.print=data.frame(res[id.issue, c("diag-icd", nm1, nm2)], range.LB[id.issue], range.UB[id.issue])
+      colnames(res.print)=c("icd", "phase1", "phase2", "phase2.rangeL", "phase2.rangeU")
+      print(paste0("Diagnoses with Different ", nm, " between Phase1.1 and Phase2.1: "))
+      print(res.print)
+      tryCatch(sink.txt(paste(apply(res.print,1, function(ll) paste(paste0(colnames(res.print), "=", ll),collapse="; ")), collapse="\n"), file=file.nm2, cat, append=T), error=function(e) NA)
+    }else{sink.txt("no issue identified", file=file.nm2, cat, append=T)}
+    sink.txt("\n+++++++++++++++++++++++++++++++++++++++++++++++\n", file=file.nm2, cat, append=T)
+    
+    nm.medclass.all=c(nm.medclass.all, res[id.issue,"diag-icd"])
   }
   is.error=length(c(nm.medclass.all,nm.duplicated))!=0
   is.error
@@ -193,27 +239,52 @@ runQC_tab_dem <- function(file.nm2, phase2.PatientSummary, phase2.PatientObserva
   print("Checking Phase2.1 Demographics ...")
   res=tab_compare_dem(phase2.PatientSummary, phase2.PatientObservations, phase1.Demographics)
   nm.duplicated=res[duplicated(res[,c("sex", "age_group", "race")]),c(c("sex", "age_group", "race"))]
-  tryCatch(sink.txt("Demographics\n", file=file.nm2, cat, append=T), error=function(e) NA)
+  tryCatch(sink.txt("5. Demographics\n", file=file.nm2, cat, append=T), error=function(e) NA)
   tryCatch(sink.txt("Duplicated rows:", file=file.nm2, cat, append=T), error=function(e) NA)
   if(dim(nm.duplicated)[1]!=0){
     nm.duplicated=unlist(lapply(1:dim(nm.duplicated)[1], function(ll) paste(paste0(colnames(nm.duplicated),"=",nm.duplicated[ll,]),collapse=":")))
     print(paste0("Duplicated rows for:", paste(nm.duplicated, collapse=';')))
     tryCatch(sink.txt(paste0(paste(nm.duplicated,collapse=";"), "\n"), file=file.nm2, cat, append=T), error=function(e) NA)}else{
-      sink.txt("no issue identified\n", file=file.nm2, cat, append=T)
+      sink.txt("no issue identified", file=file.nm2, cat, append=T)
     }
+  sink.txt("\n+++++++++++++++++++++++++++++++++++++++++++++++\n", file=file.nm2, cat, append=T)
+  sex.list=unique(tolower(phase2.PatientSummary$sex))
+  age.list=unique(tolower(phase2.PatientSummary$age_group))
+  race.list=unique(tolower(phase2.PatientSummary$race))
+  issue.sex=sex.list[sex.list%in%c("other", "female", "male")!=1]
+  issue.age_group=age.list[age.list%in%c("other", "00to02", "03to05", "06to11", "12to17", "18to25", "26to49", "50to69", "70to79", "80plus")!=1]
+  issue.race=race.list[race.list%in%c("other", "american_indian", "asian", "black", "hispanic_latino", "hawaiian_pacific_islander", "white")!=1]
+  tryCatch(sink.txt("Wrong demographic groups:\n", file=file.nm2, cat, append=T), error=function(e) NA)
+  if((length(issue.sex)+length(issue.age_group)+length(issue.race))!=0){
+  if(length(issue.sex)!=0){sink.txt(paste(paste0("wrong sex group: '", issue.sex, "'"), collapse="; "), file=file.nm2, cat, append=T);
+    sink.txt("\n", file=file.nm2, cat, append=T)
+  }else{sink.txt("no issue identified\n", file=file.nm2, cat, append=T)}
+    
+  if(length(issue.age_group)!=0){sink.txt(paste(paste0("wrong age group: '", issue.age_group, "'"), collapse="; "), file=file.nm2, cat, append=T)
+    sink.txt("\n", file=file.nm2, cat, append=T)
+  }else{sink.txt("no issue identified\n", file=file.nm2, cat, append=T)}
+    
+  if(length(issue.race)!=0){sink.txt(paste(paste0("wrong race group: '", issue.race, "'"), collapse="; "), file=file.nm2, cat, append=T)
+    sink.txt("\n", file=file.nm2, cat, append=T)
+  }else{sink.txt("wrong race group: no issue identified\n", file=file.nm2, cat, append=T)}
+    
+  }else{sink.txt("no issue identified\n", file=file.nm2, cat, append=T)}
+  sink.txt("\n+++++++++++++++++++++++++++++++++++++++++++++++\n", file=file.nm2, cat, append=T)
 }
 
 runQC_tab_cc <- function(file.nm2, phase2.ClinicalCourse, phase1.ClinicalCourse, output.dir) {
   print("Checking Phase2.1 ClinicalCourse ...")
   res=tab_compare_cc(phase2.ClinicalCourse, phase1.ClinicalCourse)
   nm.duplicated=res[duplicated(res[,"days_since_admission"]),c("days_since_admission")]
-  tryCatch(sink.txt("ClinicalCourse\n", file=file.nm2, cat, append=T), error=function(e) NA)
+  tryCatch(sink.txt("6. ClinicalCourse\n", file=file.nm2, cat, append=T), error=function(e) NA)
   tryCatch(sink.txt("Duplicated rows:", file=file.nm2, cat, append=T), error=function(e) NA)
   if(length(nm.duplicated)!=0){
     print(paste0("Duplicated rows for: ", paste(nm.duplicated,collapse=";")))
     tryCatch(sink.txt(paste0(paste(nm.duplicated,collapse=";"), "\n"), file=file.nm2, cat, append=T), error=function(e) NA)}else{
-      sink.txt("no issue identified\n", file=file.nm2, cat, append=T)
+      sink.txt("no issue identified", file=file.nm2, cat, append=T)
     }
+  sink.txt("\n+++++++++++++++++++++++++++++++++++++++++++++++\n", file=file.nm2, cat, append=T)
+  
   for (nm in c("num_patients_all_still_in_hospital",
                "num_patients_ever_severe_still_in_hospital")){
     nm1=paste0("p1.", nm)
@@ -225,9 +296,11 @@ runQC_tab_cc <- function(file.nm2, phase2.ClinicalCourse, phase1.ClinicalCourse,
     
     tryCatch(sink.txt(paste0("ClinicalCourse with Different ",nm.print," between Phase1.1 and Phase2.1: "), file=file.nm2, cat, append=T), error=function(e) NA)
     if(nm.day0!=0){
-      print(paste0("ClinicalCourse with Different total numbers of patients between Phase1.1 and Phase2.1"))
-      tryCatch(sink.txt(paste0(paste0("ClinicalCourse with Different ", nm.print, " between Phase1.1 and Phase2.1:"),"\n"), file=file.nm2, cat, append=T), error=function(e) NA)}else{
-        sink.txt("no issue identified\n", file=file.nm2, cat, append=T)
+      res.print=res[res$days_since_admission==0, c(nm1, nm2)]
+      colnames(res.print)=c("phase1", "phase2")
+      print(res.print)
+      tryCatch(sink.txt(paste(apply(res.print,1, function(ll) paste0(paste(paste0(colnames(res.print), "=", ll),collapse="; "), "\n+++++++++++++++++++++++++++++++++++++++++++++++\n")), collapse=""), file=file.nm2, cat, append=T), error=function(e) NA)}else{
+      sink.txt("no issue identified\n", file=file.nm2, cat, append=T)
       }
   }
   
@@ -478,12 +551,14 @@ tab_compare_med=function(phase2.PatientObservations, phase2.ClinicalCourse, phas
     nm.med=sort(unique(dat$concept_code))
     res.p2=NULL
     for(nm in nm.med){
+        n_all_before0=length(unique(dat[which(dat$days_since_admission<= (-15)   & dat$days_since_admission>= -365 & dat$concept_code==nm),"patient_num"]))
+        n_severe_before0=length(unique(dat[which(dat$days_since_admission<= (-15)   & dat$days_since_admission>= -365 & dat$concept_code==nm & dat$patient_num%in%patient_severe),"patient_num"]))
+      
         n_all_before1=length(unique(dat[which(dat$days_since_admission<= (-16)   & dat$days_since_admission>= -364 & dat$concept_code==nm),"patient_num"]))
         n_severe_before1=length(unique(dat[which(dat$days_since_admission<= (-16)   & dat$days_since_admission>= -364 & dat$concept_code==nm & dat$patient_num%in%patient_severe),"patient_num"]))
         
         n_all_before2=length(unique(dat[which(dat$days_since_admission<= (-14)   & dat$days_since_admission>= -366 & dat$concept_code==nm),"patient_num"]))
         n_severe_before2=length(unique(dat[which(dat$days_since_admission<= (-14)   & dat$days_since_admission>= -366 & dat$concept_code==nm & dat$patient_num%in%patient_severe),"patient_num"]))
-        
         
         n_all_since1=length(unique(dat[which(dat$days_since_admission>0 & dat$concept_code==nm),"patient_num"]))
         n_severe_since1=length(unique(dat[which(dat$days_since_admission>0 & dat$concept_code==nm & dat$patient_num%in%patient_severe),"patient_num"]))
@@ -491,8 +566,7 @@ tab_compare_med=function(phase2.PatientObservations, phase2.ClinicalCourse, phas
         n_all_since2=length(unique(dat[which(dat$days_since_admission>=0 & dat$concept_code==nm),"patient_num"]))
         n_severe_since2=length(unique(dat[which(dat$days_since_admission>=0 & dat$concept_code==nm & dat$patient_num%in%patient_severe),"patient_num"]))
         
-        
-        res.p2=rbind(res.p2, data.frame(medclass=nm,n_all_before1,n_all_before2, n_all_since1, n_all_since2, n_severe_before1, n_severe_before2, n_severe_since1, n_severe_since2))
+        res.p2=rbind(res.p2, data.frame(medclass=nm,n_all_before0,n_all_before1,n_all_before2, n_all_since1, n_all_since2, n_severe_before0, n_severe_before1, n_severe_before2, n_severe_since1, n_severe_since2))
     }
     colnames(res.p2)[-1]=paste0("p2.", colnames(res.p2)[-1])
     res.p1=NULL
@@ -508,9 +582,9 @@ tab_compare_med=function(phase2.PatientObservations, phase2.ClinicalCourse, phas
     colnames(res.p1)=c("medclass", "p1.n_all_before", "p1.n_all_since", "p1.n_severe_before", "p1.n_severe_since")
     res=suppressMessages(left_join(res.p1, res.p2, by="medclass"))
     res=res[,c("medclass", 
-               "p1.n_all_before","p2.n_all_before1","p2.n_all_before2",
+               "p1.n_all_before","p2.n_all_before0","p2.n_all_before1","p2.n_all_before2",
                "p1.n_all_since","p2.n_all_since1","p2.n_all_since2",
-               "p1.n_severe_before","p2.n_severe_before1","p2.n_severe_before2",
+               "p1.n_severe_before","p2.n_severe_before0","p2.n_severe_before1","p2.n_severe_before2",
                "p1.n_severe_since","p2.n_severe_since1","p2.n_severe_since2"
     )]
     list(res=res, nm.med.add=nm.med.add)
@@ -521,6 +595,12 @@ tab_compare_diag=function(phase2.PatientObservations, phase2.ClinicalCourse, pha
     dat$concept_code=as.character(dat$concept_code)
     patient_severe=phase2.ClinicalCourse[which(phase2.ClinicalCourse$severe==1),"patient_num"]
     nm.diag=sort(unique(dat$concept_code))
+    
+    tmp.all.before0=dat[which(dat$days_since_admission<= (-15) & dat$days_since_admission>=-365),c("patient_num", "concept_code")]
+    tmp.all.before0=tmp.all.before0[duplicated(tmp.all.before0)!=1,]
+    n_all_before0=table(tmp.all.before0[,"concept_code"])
+    n_all_before0=data.frame(n_all_before0)
+    n_all_before0=suppressMessages(left_join(data.frame(Var1=nm.diag), n_all_before0, by="Var1"))
     
     tmp.all.before1=dat[which(dat$days_since_admission<= (-16) & dat$days_since_admission>=-364),c("patient_num", "concept_code")]
     tmp.all.before1=tmp.all.before1[duplicated(tmp.all.before1)!=1,]
@@ -546,6 +626,12 @@ tab_compare_diag=function(phase2.PatientObservations, phase2.ClinicalCourse, pha
     n_all_since2=table(tmp.all.since2[,"concept_code"])
     n_all_since2=data.frame(n_all_since2)
     n_all_since2=suppressMessages(left_join(data.frame(Var1=nm.diag), n_all_since2, by="Var1"))
+    
+    tmp.severe.before0=dat[which(dat$days_since_admission<= (-15) & dat$days_since_admission>=-365 & dat$patient_num%in%patient_severe),c("patient_num", "concept_code")]
+    tmp.severe.before0=tmp.severe.before0[duplicated(tmp.severe.before0)!=1,]
+    n_severe_before0=table(tmp.severe.before0[,"concept_code"])
+    n_severe_before0=data.frame(n_severe_before0)
+    n_severe_before0=suppressMessages(left_join(data.frame(Var1=nm.diag), n_severe_before0, by="Var1"))
     
     tmp.severe.before1=dat[which(dat$days_since_admission<= (-16) & dat$days_since_admission>=-364 & dat$patient_num%in%patient_severe),c("patient_num", "concept_code")]
     tmp.severe.before1=tmp.severe.before1[duplicated(tmp.severe.before1)!=1,]
@@ -573,17 +659,17 @@ tab_compare_diag=function(phase2.PatientObservations, phase2.ClinicalCourse, pha
     n_severe_since2=suppressMessages(left_join(data.frame(Var1=nm.diag), n_severe_since2, by="Var1"))
     
     
-    res.p2=cbind(n_all_before1,n_all_before2[,2], n_all_since1[,2], n_all_since2[,2],n_severe_before1[,2],n_severe_before2[,2], n_severe_since1[,2], n_severe_since2[,2])
-    colnames(res.p2)=c("diag-icd","p2.n_all_before1","p2.n_all_before2","p2.n_all_since1","p2.n_all_since2","p2.n_severe_before1","p2.n_severe_before2","p2.n_severe_since1","p2.n_severe_since2")
+    res.p2=cbind(n_all_before0,n_all_before1[,2],n_all_before2[,2], n_all_since1[,2], n_all_since2[,2],n_severe_before0[,2],n_severe_before1[,2],n_severe_before2[,2], n_severe_since1[,2], n_severe_since2[,2])
+    colnames(res.p2)=c("diag-icd","p2.n_all_before0","p2.n_all_before1","p2.n_all_before2","p2.n_all_since1","p2.n_all_since2","p2.n_severe_before0","p2.n_severe_before1","p2.n_severe_before2","p2.n_severe_since1","p2.n_severe_since2")
     res.p2[is.na(res.p2)]=0
     
     res.p1=phase1.Diagnoses[, -c(1,3)]
     colnames(res.p1)=c("diag-icd", "p1.n_all_before", "p1.n_all_since", "p1.n_severe_before", "p1.n_severe_since")
     res=suppressMessages(left_join(res.p1, res.p2, by="diag-icd"))
     res=res[,c("diag-icd", 
-               "p1.n_all_before","p2.n_all_before1","p2.n_all_before2",
+               "p1.n_all_before","p2.n_all_before0","p2.n_all_before1","p2.n_all_before2",
                "p1.n_all_since","p2.n_all_since1","p2.n_all_since2",
-               "p1.n_severe_before","p2.n_severe_before1","p2.n_severe_before2",
+               "p1.n_severe_before","p2.n_severe_before0","p2.n_severe_before1","p2.n_severe_before2",
                "p1.n_severe_since","p2.n_severe_since1","p2.n_severe_since2"
     )]
     res
