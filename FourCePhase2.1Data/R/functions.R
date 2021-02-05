@@ -12,6 +12,7 @@ runQC_Phase1.1_report=function(file.nm1, phase1.DailyCounts, phase1.ClinicalCour
     colnames(qc.res$qc.lab.unit$err.report)=
     c("SiteID", "Possible Issues")
   
+  
   tryCatch(sink.txt("Phase1.1 QC Report\n", file=file.nm1, cat, append=F), error=function(e) NA)
   tryCatch(sink.txt(paste0(Sys.Date(),"\n"), file=file.nm1, cat, append=T), error=function(e) NA)
   tryCatch(sink.txt("Column names\n", file=file.nm1, cat, append=T), error=function(e) NA)
