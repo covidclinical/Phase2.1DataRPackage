@@ -12,6 +12,7 @@ runQC_Phase1.1_report=function(file.nm1, phase1.DailyCounts, phase1.ClinicalCour
     colnames(qc.res$qc.lab.unit$err.report)=
     c("SiteID", "Possible Issues")
   
+  
   tryCatch(sink.txt("Phase1.1 QC Report\n", file=file.nm1, cat, append=F), error=function(e) NA)
   tryCatch(sink.txt(paste0(Sys.Date(),"\n"), file=file.nm1, cat, append=T), error=function(e) NA)
   tryCatch(sink.txt("Column names\n", file=file.nm1, cat, append=T), error=function(e) NA)
@@ -124,8 +125,8 @@ runQC_tab_lab <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObserva
     nm1=paste0("p1.", nm)
     nm2=paste0("p2.", nm)
     nm.check=paste0("nm.diff.",nm)
-    range.LB=round(res[,nm2]-res[,nm2]*0.025,5)
-    range.UB=round(res[,nm2]+res[,nm2]*0.025,5)
+    range.LB=round(res[,nm2]-pmax(res[,nm2]*0.025,5),5)
+    range.UB=round(res[,nm2]+pmax(res[,nm2]*0.025,5),5)
     id.issue=which(round(res[,nm1],5)>range.UB|round(res[,nm1],5)<range.LB)
     tryCatch(sink.txt(paste0("Labs with Different ", nm, " between Phase1.1 and Phase2.1:\n"), file=file.nm2, cat, append=T), error=function(e) NA)
     if(length(id.issue)!=0){
@@ -171,8 +172,9 @@ runQC_tab_med <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObserva
     
     nm.check=paste0("nm.diff.",nm)
     
-    range.LB=(res[,nm2.1]*0.975)
-    range.UB=(res[,nm2.2]*1.025)
+    range.LB=pmin(res[,nm2.1]*0.975, res[,nm2.1]-5)
+    range.UB=pmax(res[,nm2.2]*1.025, res[,nm2.2]+5)
+    
     id.issue=which(res[,nm1]<range.LB|res[,nm1]>range.UB)
     
     tryCatch(sink.txt(paste0("Medclass with different ", nm, " between Phase1.1 and Phase2.1:\n"), file=file.nm2, cat, append=T), error=function(e) NA)
@@ -215,8 +217,8 @@ runQC_tab_diag <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObserv
     nm2.2=paste0("p2.", nm,2)
     
     nm.check=paste0("nm.diff.",nm)
-    range.LB=(res[,nm2.1]*0.975)
-    range.UB=(res[,nm2.2]*1.025)
+    range.LB=pmin(res[,nm2.1]*0.975,res[,nm2.1]-5)
+    range.UB=pmax(res[,nm2.2]*1.025, res[,nm2.2]+5)
     id.issue=which(res[,nm1]<range.LB|res[,nm1]>range.UB)
 
     tryCatch(sink.txt(paste0("Diagnoses with Different ", nm, " between Phase1.1 and Phase2.1:"), file=file.nm2, cat, append=T), error=function(e) NA)
@@ -717,7 +719,9 @@ tab_compare_cc=function(phase2.ClinicalCourse, phase1.ClinicalCourse){
         num_patients_ever_severe_still_in_hospital=length(unique(phase2.ClinicalCourse[which(phase2.ClinicalCourse[,"days_since_admission"]==myday & phase2.ClinicalCourse[,"in_hospital"]==1 & phase2.ClinicalCourse[,"patient_num"]%in%patient_ever_severe==1),"patient_num"]))
         res.p2=rbind(res.p2,c(num_patients_all_still_in_hospital,num_patients_ever_severe_still_in_hospital))
     }
-    res=cbind(phase1.ClinicalCourse[,-1], res.p2)
+    res=cbind(phase1.ClinicalCourse[,c("days_since_admission", 
+                                       "num_patients_all_still_in_hospital",
+                                       "num_patients_ever_severe_still_in_hospital")], res.p2)
     colnames(res)[-1]=c("p1.num_patients_all_still_in_hospital","p1.num_patients_ever_severe_still_in_hospital",
                         "p2.num_patients_all_still_in_hospital","p2.num_patients_ever_severe_still_in_hospital")
     res=res[,c("days_since_admission",
