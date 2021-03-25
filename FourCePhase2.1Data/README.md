@@ -6,7 +6,7 @@ This repository contains R functions for Phase 2.1 Data Pre-Processing for the 4
 To install this package in R:
 
 ``` R
-devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE)
+devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE, ref="ChuanHong-testing)
 ```
 
 # 4CE Phase 2.1 Data Pre-Processing Overview
@@ -79,7 +79,7 @@ The R library (`FourCePhase2.1Data`) in this repository also contains functions 
 2. Install and load the R package:
 
 ``` R
-devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE)
+devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", ref="ChuanHong-testing", upgrade=FALSE)
 ```
 3. Store the Phase1.1 data and Phase2.1 data in the /4ceData/Input directory that is mounted to the container. The list of .csv files is as follows:
 ## Phase 1.1
@@ -109,30 +109,25 @@ FourCePhase2.1Data::runQC(currSiteId)
 
 **If there is any issue identified in Step 5, please fix the issue before going to Data Pivot or downstream analysis.**
 
-6. Data Pivot. Please note the Data Pivot step is option. You can either use functions in this package to generate data pivot or use your own funciton. The list of data pivots is as follows:
+6. Data Pivot. In the Data Pivot step, the functions simply read in the csv files. If the column names were upper case in the original csv files, the Data Pivot functions change the column names to lower case. The list of data pivots is as follows:
 
-+ Labs_Longitudinal
-+ Medications_Longitudinal
-+ Diagnoses_Longitudina
-+ Covariates_Baseline
-+ EventTime
++ All Phase1.1 csv files
++ All Phase2.1 csv files
 
 ``` R
-pivotData_Labs_Longitudinal(siteid)
-pivotData_Medications_Longitudinal(siteid)
-pivotData_Diagnoses_Longitudinal(siteid)
-pivotData_Covariates_Baseline(siteid)
-pivotData_EventTime(siteid)
+LocalPatientClinicalCourse=pivotData_LocalPatientClinicalCourse(siteid)
+LocalPatientObservations=pivotData_LocalPatientObservations(siteid)
+LocalPatientSummary=pivotData_LocalPatientSummary(siteid)
+LocalPatientMapping=pivotData_LocalPatientMapping(siteid)
+Labs=pivotData_Labs(siteid)
+Medications=pivotData_Medications(siteid)
+Diagnoses=pivotData_Diagnoses(siteid)
+Demographics=pivotData_Demographics(siteid)
+DailyCounts=pivotData_DailyCounts(siteid)
+ClinicalCourse=pivotData_ClinicalCourse(siteid)
 
 ```
 
-9. If step 6 has worked correctly, you should be able to see the following files in the output directory:
-
-+ Phase2.1DataPivot_Labs_Longitudinal.csv
-+ Phase2.1DataPivot_Medications_Longitudinal.csv
-+ Phase2.1DataPivot_Diagnoses_Longitudinal.csv
-+ Phase2.1DataPivota_Covariates_Baseline.csv
-+ Phase2.1DataPivot_EventTime.csv
 
 
 
