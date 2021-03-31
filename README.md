@@ -115,16 +115,16 @@ FourCePhase2.1Data::runQC(currSiteId)
 + All Phase2.1 csv files
 
 ``` R
-LocalPatientClinicalCourse=pivotData_LocalPatientClinicalCourse(siteid)
-LocalPatientObservations=pivotData_LocalPatientObservations(siteid)
-LocalPatientSummary=pivotData_LocalPatientSummary(siteid)
-LocalPatientMapping=pivotData_LocalPatientMapping(siteid)
-Labs=pivotData_Labs(siteid)
-Medications=pivotData_Medications(siteid)
-Diagnoses=pivotData_Diagnoses(siteid)
-Demographics=pivotData_Demographics(siteid)
-DailyCounts=pivotData_DailyCounts(siteid)
-ClinicalCourse=pivotData_ClinicalCourse(siteid)
+LocalPatientClinicalCourse=getLocalPatientClinicalCourse(siteid)
+LocalPatientObservations=getLocalPatientObservations(siteid)
+LocalPatientSummary=getLocalPatientSummary(siteid)
+LocalPatientMapping=getLocalPatientMapping(siteid)
+Labs=getLabs(siteid)
+Medications=getMedications(siteid)
+Diagnoses=getDiagnoses(siteid)
+Demographics=getDemographics(siteid)
+DailyCounts=getDailyCounts(siteid)
+ClinicalCourse=getClinicalCourse(siteid)
 
 ```
 
