@@ -113,22 +113,22 @@ FourCePhase2.1Data::runQC(currSiteId)
 + All Phase2.1 csv files
 
 ``` R
-LocalPatientClinicalCourse=getLocalPatientClinicalCourse(siteid)
-LocalPatientObservations=getLocalPatientObservations(siteid)
-LocalPatientSummary=getLocalPatientSummary(siteid)
-LocalPatientMapping=getLocalPatientMapping(siteid)
-Labs=getLabs(siteid)
-Medications=getMedications(siteid)
-Diagnoses=getDiagnoses(siteid)
-Demographics=getDemographics(siteid)
-DailyCounts=getDailyCounts(siteid)
-ClinicalCourse=getClinicalCourse(siteid)
+LocalPatientClinicalCourse=getLocalPatientClinicalCourse(currSiteId)
+LocalPatientObservations=getLocalPatientObservations(currSiteId)
+LocalPatientSummary=getLocalPatientSummary(currSiteId)
+LocalPatientMapping=getLocalPatientMapping(currSiteId)
+Labs=getLabs(currSiteId)
+Medications=getMedications(currSiteId)
+Diagnoses=getDiagnoses(currSiteId)
+Demographics=getDemographics(currSiteId)
+DailyCounts=getDailyCounts(currSiteId)
+ClinicalCourse=getClinicalCourse(currSiteId)
 
 ```
 
 7. Getting obfuscation level. In this step, the function returns the obfuscation level of a specific site. 
 ``` R
-obfuscation_level=getObfuscation(siteid)
+obfuscation_level=getObfuscation(currSiteId)
 
 ```
 
