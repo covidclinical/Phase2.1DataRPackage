@@ -61,15 +61,9 @@ The R library (`FourCePhase2.1Data`) in this repository contains functions that 
 The QC reports for Phase1.1 and Phase2.1 will be generated in word format. 
 
 
-## Data pivot 
+## Getting the raw data
 
-The R library (`FourCePhase2.1Data`) in this repository also contains functions for data manipulation, which generates data in specific formats to fit into different analyses:  
-1. **Longitudinal data for Labs**: days since admission 
-2. **Longitudinal data for Medications**: before and since admission 
-3. **Longitudinal data for Diagnoses**: before and since admission 
-4. **Baseline covariates**: demographic variables, lab measures at day 0, medications and diagnoses before admission. 
-5. **Time varying covariates**: to be added
-6. **Event time data**: for each event outcome (severe, deceased, and severe AND deceased), we derive observed event time, and the indicator of obsering the event. 
+The R library (`FourCePhase2.1Data`) in this repository also contains functions to read in the Phase2.1 Data. 
 
 # Get Started
 
@@ -109,7 +103,7 @@ FourCePhase2.1Data::runQC(currSiteId)
 
 **If there is any issue identified in Step 5, please fix the issue before going to Data Pivot or downstream analysis.**
 
-6. Data Pivot. In the Data Pivot step, the functions simply read in the csv files. If the column names were upper case in the original csv files, the Data Pivot functions change the column names to lower case. The list of data pivots is as follows:
+6. Getting the Phase2.1 Data. In this step, the functions simply read in the csv files. If the column names were upper case in the original csv files, the Data Pivot functions change the column names to lower case. The list of data pivots is as follows:
 
 + All Phase1.1 csv files
 + All Phase2.1 csv files
