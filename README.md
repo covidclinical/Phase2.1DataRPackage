@@ -63,7 +63,11 @@ The QC reports for Phase1.1 and Phase2.1 will be generated in word format.
 
 ## Getting the raw data
 
-The R library (`FourCePhase2.1Data`) in this repository also contains functions to read in the Phase2.1 Data. 
+The R library (`FourCePhase2.1Data`) in this repository contains functions to read in the Phase2.1 Data. 
+
+## Getting the obfuscation level
+
+The R library (`FourCePhase2.1Data`) in this repository contains functions to get the obfuscation level of a specific site.
 
 # Get Started
 
@@ -122,7 +126,9 @@ ClinicalCourse=getClinicalCourse(siteid)
 
 ```
 
+7. Getting obfuscation level. In this step, the function returns the obfuscation level of a specific site. 
+``` R
+obfuscation_level=getObfuscation(siteid)
 
-
-
+```
 
