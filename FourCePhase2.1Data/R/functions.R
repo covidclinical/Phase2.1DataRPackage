@@ -125,8 +125,10 @@ runQC_tab_lab <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObserva
     nm1=paste0("p1.", nm)
     nm2=paste0("p2.", nm)
     nm.check=paste0("nm.diff.",nm)
-    range.LB=round(res[,nm2]-res[,nm2]*0.025,5)
-    range.UB=round(res[,nm2]+res[,nm2]*0.025,5)
+    range.LB=round(res[,nm2]-pmax(res[,nm2]*0.025,7),5)
+    #range.LB=round(res[,nm2]-res[,nm2]*0.025,5)
+    
+    range.UB=round(res[,nm2]+pmax(res[,nm2]*0.025,7),5)
     id.issue=which(round(res[,nm1],5)>range.UB|round(res[,nm1],5)<range.LB)
     tryCatch(sink.txt(paste0("Labs with Different ", nm, " between Phase1.1 and Phase2.1:\n"), file=file.nm2, cat, append=T), error=function(e) NA)
     if(length(id.issue)!=0){
@@ -172,8 +174,9 @@ runQC_tab_med <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObserva
     
     nm.check=paste0("nm.diff.",nm)
     
-    range.LB=(res[,nm2.1]*0.975)
-    range.UB=(res[,nm2.2]*1.025)
+    range.LB=pmin(res[,nm2.1]*0.975, res[,nm2.1]-7)
+    range.UB=pmax(res[,nm2.2]*1.025, res[,nm2.2]+7)
+    
     id.issue=which(res[,nm1]<range.LB|res[,nm1]>range.UB)
     
     tryCatch(sink.txt(paste0("Medclass with different ", nm, " between Phase1.1 and Phase2.1:\n"), file=file.nm2, cat, append=T), error=function(e) NA)
@@ -216,8 +219,8 @@ runQC_tab_diag <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObserv
     nm2.2=paste0("p2.", nm,2)
     
     nm.check=paste0("nm.diff.",nm)
-    range.LB=(res[,nm2.1]*0.975)
-    range.UB=(res[,nm2.2]*1.025)
+    range.LB=pmin(res[,nm2.1]*0.975,res[,nm2.1]-7)
+    range.UB=pmax(res[,nm2.2]*1.025, res[,nm2.2]+7)
     id.issue=which(res[,nm1]<range.LB|res[,nm1]>range.UB)
 
     tryCatch(sink.txt(paste0("Diagnoses with Different ", nm, " between Phase1.1 and Phase2.1:"), file=file.nm2, cat, append=T), error=function(e) NA)
@@ -291,7 +294,7 @@ runQC_tab_cc <- function(file.nm2, phase2.ClinicalCourse, phase1.ClinicalCourse,
     nm1=paste0("p1.", nm)
     nm2=paste0("p2.", nm)
     nm.check=paste0("nm.diff.",nm)
-    nm.day0=res[res$days_since_admission==0,nm1]!=res[res$days_since_admission==0,nm2]
+    nm.day0=(res[res$days_since_admission==0,nm1]<res[res$days_since_admission==0,nm2]-7) * (res[res$days_since_admission==0,nm1]>res[res$days_since_admission==0,nm2]+7)
     if(nm=="num_patients_all_still_in_hospital"){nm.print="total numbers of patient"}
     if(nm=="num_patients_ever_severe_still_in_hospital"){nm.print="total numbers of ever severe patient"}
     
@@ -718,7 +721,9 @@ tab_compare_cc=function(phase2.ClinicalCourse, phase1.ClinicalCourse){
         num_patients_ever_severe_still_in_hospital=length(unique(phase2.ClinicalCourse[which(phase2.ClinicalCourse[,"days_since_admission"]==myday & phase2.ClinicalCourse[,"in_hospital"]==1 & phase2.ClinicalCourse[,"patient_num"]%in%patient_ever_severe==1),"patient_num"]))
         res.p2=rbind(res.p2,c(num_patients_all_still_in_hospital,num_patients_ever_severe_still_in_hospital))
     }
-    res=cbind(phase1.ClinicalCourse[,-1], res.p2)
+    res=cbind(phase1.ClinicalCourse[,c("days_since_admission", 
+                                       "num_patients_all_still_in_hospital",
+                                       "num_patients_ever_severe_still_in_hospital")], res.p2)
     colnames(res)[-1]=c("p1.num_patients_all_still_in_hospital","p1.num_patients_ever_severe_still_in_hospital",
                         "p2.num_patients_all_still_in_hospital","p2.num_patients_ever_severe_still_in_hospital")
     res=res[,c("days_since_admission",
@@ -974,11 +979,11 @@ err_report_diagnosis_site=function(dat.Diagnoses, dat.ClinicalCourse, dat.Demogr
     err.label3= "N_all_before < N_ever_severe_before"
     err.label4= "N_all_since < N_ever_severe_since"
     err.label5= "negative N (not -999 or -99)"
-    err.label6= "ICD not belong to dictionary"
-    err.label7= "N_ever_severe<N_ever_severe_before with diagnosis"
-    err.label8= "N_ever_severe<N_ever_severe_since with diagnosis"
+    err.label6= "N_ever_severe<N_ever_severe_before with diagnosis"
+    err.label7= "N_ever_severe<N_ever_severe_since with diagnosis"
     
-    err.label=c(err.label1, err.label2, err.label3, err.label4, err.label5, err.label6, err.label7, err.label8)
+    err.label=c(err.label1, err.label2, err.label3, err.label4, err.label5, err.label6, err.label7)
+
     
     dat.site.cc=dat.ClinicalCourse
     colnames(dat.site.cc)=tolower(colnames(dat.site.cc))
@@ -1009,20 +1014,19 @@ err_report_diagnosis_site=function(dat.Diagnoses, dat.ClinicalCourse, dat.Demogr
     err5=any(unique(dat.check[dat.check<0])%in%c(-99, -999)!=1)
     
     icd.list=unique(as.character(dat.site[,"icd_code_3chars"]))
-    err6=paste(icd.list[icd.list%in%icd.list0!=1],collapse=";")
     
-    err7=any(dat.site[id.nomiss,"num_patients_ever_severe_before_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))
-    note7=dat.site[id.nomiss[which(dat.site[id.nomiss,"num_patients_ever_severe_before_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))],c("icd_code_3chars","num_patients_ever_severe_since_admission")]
-    err8=any(dat.site[id.nomiss,"num_patients_ever_severe_since_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))
-    note8=dat.site[id.nomiss[which(dat.site[id.nomiss,"num_patients_ever_severe_since_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))],c("icd_code_3chars","num_patients_ever_severe_since_admission")]
+    err6=any(dat.site[id.nomiss,"num_patients_ever_severe_before_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))
+    note6=dat.site[id.nomiss[which(dat.site[id.nomiss,"num_patients_ever_severe_before_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))],c("icd_code_3chars","num_patients_ever_severe_since_admission")]
+    err7=any(dat.site[id.nomiss,"num_patients_ever_severe_since_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))
+    note7=dat.site[id.nomiss[which(dat.site[id.nomiss,"num_patients_ever_severe_since_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))],c("icd_code_3chars","num_patients_ever_severe_since_admission")]
     
-    err=c(err1, err2, err3, err4, err5, err6, err7, err8)
-    err.label[6]=paste0("ICD not in dictionary:", err6)
+    err=c(err1, err2, err3, err4, err5, err6, err7)
+
+    if(dim(note6)[1]!=0){
+        err.label[6]=paste0(paste(note6, collapse=";"), "")}
+    
     if(dim(note7)[1]!=0){
-        err.label[7]=paste0(paste(note7, collapse=";"), "")}
-    
-    if(dim(note8)[1]!=0){
-        err.label[8]=paste0(err.label[8],":",max(dat.site.dc[, "cumulative_patients_severe"])," vs. ", note8[2], "(", note8[1], ")")}
+        err.label[7]=paste0(err.label[7],":",max(dat.site.dc[, "cumulative_patients_severe"])," vs. ", note7[2], "(", note7[1], ")")}
     report=data.frame(site.nm, label=err.label, err)
     
     err.report=report[as.character(report[,"err"])%in%c(FALSE,"")!=1,c("site.nm", "label")]
