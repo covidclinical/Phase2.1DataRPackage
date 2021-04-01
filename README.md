@@ -11,7 +11,7 @@ devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage"
 
 # 4CE Phase 2.1 Data Pre-Processing Overview
 
-The Phase 2.1 Data Pre-Processing consists of three parts: Quality Control (QC), getting raw data, and getting obfuscation level. The QC is required for ALL sites.
+The Phase 2.1 Data Pre-Processing consists of three parts: Quality Control (QC), getting raw data, and getting obfuscation level. The QC is recommended for ALL sites.
 
 
 ## Quality Control 
@@ -61,14 +61,13 @@ The R library (`FourCePhase2.1Data`) in this repository contains functions that 
 The QC reports for Phase1.1 and Phase2.1 will be generated in word format. 
 
 
-## Getting raw data
+## Getting the raw data
 
-The R library (`FourCePhase2.1Data`) in this repository contains functions for reading raw data of Phase1.1 and Phase2.1.
+The R library (`FourCePhase2.1Data`) in this repository contains functions to read in the Phase2.1 Data. 
 
-## Getting obfuscation level
+## Getting the obfuscation level
 
-The R library (`FourCePhase2.1Data`) in this repository contains functions for getting the obfuscation level of a specific site.
-
+The R library (`FourCePhase2.1Data`) in this repository contains functions to get the obfuscation level of a specific site.
 
 # Get Started
 
@@ -78,7 +77,7 @@ The R library (`FourCePhase2.1Data`) in this repository contains functions for g
 2. Install and load the R package:
 
 ``` R
-devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE)
+devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", ref="ChuanHong-testing", upgrade=FALSE)
 ```
 3. Store the Phase1.1 data and Phase2.1 data in the /4ceData/Input directory that is mounted to the container. The list of .csv files is as follows:
 ## Phase 1.1
@@ -106,24 +105,24 @@ FourCePhase2.1Data::runQC(currSiteId)
 
 + Phase2.1QC_Report.doc
 
-**If there is any issue identified in Step 5, please fix the issue before going to Data Pivot or downstream analysis.**
+**If there is any issue identified in Step 5, please fix the issue before going to next step.**
 
-6. Getting raw data. In this step, the functions simply read in the csv files. If the column names were upper case in the original csv files, the functions change the column names to lower case. The list of data files is as follows:
+6. Getting the raw Phase1.1 and Phase2.1 Data. In this step, the functions simply read in the csv files. If the column names were upper case in the original csv files, the functions change the column names to lower case. The list of data files is as follows:
 
 + All Phase1.1 csv files
 + All Phase2.1 csv files
 
 ``` R
-LocalPatientClinicalCourse=pivotData_LocalPatientClinicalCourse(siteid)
-LocalPatientObservations=pivotData_LocalPatientObservations(siteid)
-LocalPatientSummary=pivotData_LocalPatientSummary(siteid)
-LocalPatientMapping=pivotData_LocalPatientMapping(siteid)
-Labs=pivotData_Labs(siteid)
-Medications=pivotData_Medications(siteid)
-Diagnoses=pivotData_Diagnoses(siteid)
-Demographics=pivotData_Demographics(siteid)
-DailyCounts=pivotData_DailyCounts(siteid)
-ClinicalCourse=pivotData_ClinicalCourse(siteid)
+LocalPatientClinicalCourse=getLocalPatientClinicalCourse(currSiteId)
+LocalPatientObservations=getLocalPatientObservations(currSiteId)
+LocalPatientSummary=getLocalPatientSummary(currSiteId)
+LocalPatientMapping=getLocalPatientMapping(currSiteId)
+Labs=getLabs(currSiteId)
+Medications=getMedications(currSiteId)
+Diagnoses=getDiagnoses(currSiteId)
+Demographics=getDemographics(currSiteId)
+DailyCounts=getDailyCounts(currSiteId)
+ClinicalCourse=getClinicalCourse(currSiteId)
 
 ```
 
@@ -132,7 +131,4 @@ ClinicalCourse=pivotData_ClinicalCourse(siteid)
 obfuscation_level=getObfuscation(currSiteId)
 
 ```
-
-
-
 
