@@ -77,7 +77,7 @@ The R library (`FourCePhase2.1Data`) in this repository contains functions to ge
 2. Install and load the R package:
 
 ``` R
-devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", ref="ChuanHong-testing", upgrade=FALSE)
+devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE)
 ```
 3. Store the Phase1.1 data and Phase2.1 data in the /4ceData/Input directory that is mounted to the container. The list of .csv files is as follows:
 ## Phase 1.1
