@@ -33,11 +33,13 @@ getLocalPatientMapping<- function(siteid) {
 }
 
 getLabs<- function(siteid) {
+  dir.input=getInputDataDirectoryName()
   Labs=read.csv(paste0(dir.input,"/Labs-", siteid,".csv"))
   Labs
 }
 
 getMedications<- function(siteid) {
+  dir.input=getInputDataDirectoryName()
   Medications=read.csv(paste0(dir.input,"/Medications-", siteid,".csv"))
   Medications
 }
@@ -48,16 +50,19 @@ getDiagnoses<- function(siteid) {
 }
 
 getDemographics<- function(siteid) {
+  dir.input=getInputDataDirectoryName()
   Demographics=read.csv(paste0(dir.input,"/Demographics-", siteid,".csv"))
   Demographics
 }
 
 getDailyCounts<- function(siteid) {
+  dir.input=getInputDataDirectoryName()
   DailyCounts=read.csv(paste0(dir.input,"/DailyCounts-", siteid,".csv"))
   DailyCounts
 }
 
 getClinicalCourse<- function(siteid) {
+  dir.input=getInputDataDirectoryName()
   ClinicalCourse=read.csv(paste0(dir.input,"/ClinicalCourse-", siteid,".csv"))
   ClinicalCourse
 }
