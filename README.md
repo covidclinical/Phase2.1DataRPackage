@@ -105,7 +105,7 @@ FourCePhase2.1Data::runQC(currSiteId)
 
 + Phase2.1QC_Report.doc
 
-**If there is any issue identified in Step 5, please fix the issue before going to Data Pivot or downstream analysis.**
+**If there is any issue identified in Step 5, please fix the issue before going to next step.**
 
 6. Getting the Phase2.1 Data. In this step, the functions simply read in the csv files. If the column names were upper case in the original csv files, the Data Pivot functions change the column names to lower case. The list of data pivots is as follows:
 
