@@ -6,7 +6,7 @@ This repository contains R functions for Phase 2.1 Data Pre-Processing for the 4
 To install this package in R:
 
 ``` R
-devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE, ref="ChuanHong-testing)
+devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE)
 ```
 
 # 4CE Phase 2.1 Data Pre-Processing Overview
@@ -79,7 +79,7 @@ The R library (`FourCePhase2.1Data`) in this repository also contains functions 
 2. Install and load the R package:
 
 ``` R
-devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", ref="ChuanHong-testing", upgrade=FALSE)
+devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE)
 ```
 3. Store the Phase1.1 data and Phase2.1 data in the /4ceData/Input directory that is mounted to the container. The list of .csv files is as follows:
 ## Phase 1.1
