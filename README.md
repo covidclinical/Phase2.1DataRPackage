@@ -11,7 +11,7 @@ devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage"
 
 # 4CE Phase 2.1 Data Pre-Processing Overview
 
-The Phase 2.1 Data Pre-Processing consists of two parts: Quality Control (QC) and Data Pivot. The QC is recommended for ALL sites; the Data Pivot is optional. 
+The Phase 2.1 Data Pre-Processing consists of three parts: Quality Control (QC), getting raw data, and getting obfuscation level. The QC is required for ALL sites.
 
 
 ## Quality Control 
@@ -61,15 +61,14 @@ The R library (`FourCePhase2.1Data`) in this repository contains functions that 
 The QC reports for Phase1.1 and Phase2.1 will be generated in word format. 
 
 
-## Data pivot 
+## Getting raw data
 
-The R library (`FourCePhase2.1Data`) in this repository also contains functions for data manipulation, which generates data in specific formats to fit into different analyses:  
-1. **Longitudinal data for Labs**: days since admission 
-2. **Longitudinal data for Medications**: before and since admission 
-3. **Longitudinal data for Diagnoses**: before and since admission 
-4. **Baseline covariates**: demographic variables, lab measures at day 0, medications and diagnoses before admission. 
-5. **Time varying covariates**: to be added
-6. **Event time data**: for each event outcome (severe, deceased, and severe AND deceased), we derive observed event time, and the indicator of obsering the event. 
+The R library (`FourCePhase2.1Data`) in this repository contains functions for reading raw data of Phase1.1 and Phase2.1.
+
+## Getting obfuscation level
+
+The R library (`FourCePhase2.1Data`) in this repository contains functions for getting the obfuscation level of a specific site.
+
 
 # Get Started
 
@@ -109,7 +108,7 @@ FourCePhase2.1Data::runQC(currSiteId)
 
 **If there is any issue identified in Step 5, please fix the issue before going to Data Pivot or downstream analysis.**
 
-6. Data Pivot. In the Data Pivot step, the functions simply read in the csv files. If the column names were upper case in the original csv files, the Data Pivot functions change the column names to lower case. The list of data pivots is as follows:
+6. Getting raw data. In this step, the functions simply read in the csv files. If the column names were upper case in the original csv files, the functions change the column names to lower case. The list of data files is as follows:
 
 + All Phase1.1 csv files
 + All Phase2.1 csv files
@@ -128,6 +127,11 @@ ClinicalCourse=pivotData_ClinicalCourse(siteid)
 
 ```
 
+7. Getting obfuscation level. In this step, the function returns the obfuscation level of a specific site. 
+``` R
+obfuscation_level=getObfuscation(currSiteId)
+
+```
 
 
 
