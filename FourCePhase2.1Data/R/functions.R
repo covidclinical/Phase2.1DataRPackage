@@ -294,7 +294,7 @@ runQC_tab_cc <- function(file.nm2, phase2.ClinicalCourse, phase1.ClinicalCourse,
     nm1=paste0("p1.", nm)
     nm2=paste0("p2.", nm)
     nm.check=paste0("nm.diff.",nm)
-    nm.day0=res[res$days_since_admission==0,nm1]%in%c(res[res$days_since_admission==0,nm2]-7, res[res$days_since_admission==0,nm2]+7)!=1
+    nm.day0=(res[res$days_since_admission==0,nm1]<res[res$days_since_admission==0,nm2]-7) * (res[res$days_since_admission==0,nm1]>res[res$days_since_admission==0,nm2]+7)
     if(nm=="num_patients_all_still_in_hospital"){nm.print="total numbers of patient"}
     if(nm=="num_patients_ever_severe_still_in_hospital"){nm.print="total numbers of ever severe patient"}
     
