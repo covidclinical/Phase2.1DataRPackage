@@ -979,11 +979,11 @@ err_report_diagnosis_site=function(dat.Diagnoses, dat.ClinicalCourse, dat.Demogr
     err.label3= "N_all_before < N_ever_severe_before"
     err.label4= "N_all_since < N_ever_severe_since"
     err.label5= "negative N (not -999 or -99)"
-    err.label6= "ICD not belong to dictionary"
-    err.label7= "N_ever_severe<N_ever_severe_before with diagnosis"
-    err.label8= "N_ever_severe<N_ever_severe_since with diagnosis"
+    err.label6= "N_ever_severe<N_ever_severe_before with diagnosis"
+    err.label7= "N_ever_severe<N_ever_severe_since with diagnosis"
     
-    err.label=c(err.label1, err.label2, err.label3, err.label4, err.label5, err.label6, err.label7, err.label8)
+    err.label=c(err.label1, err.label2, err.label3, err.label4, err.label5, err.label6, err.label7)
+
     
     dat.site.cc=dat.ClinicalCourse
     colnames(dat.site.cc)=tolower(colnames(dat.site.cc))
@@ -1014,20 +1014,19 @@ err_report_diagnosis_site=function(dat.Diagnoses, dat.ClinicalCourse, dat.Demogr
     err5=any(unique(dat.check[dat.check<0])%in%c(-99, -999)!=1)
     
     icd.list=unique(as.character(dat.site[,"icd_code_3chars"]))
-    err6=paste(icd.list[icd.list%in%icd.list0!=1],collapse=";")
     
-    err7=any(dat.site[id.nomiss,"num_patients_ever_severe_before_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))
-    note7=dat.site[id.nomiss[which(dat.site[id.nomiss,"num_patients_ever_severe_before_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))],c("icd_code_3chars","num_patients_ever_severe_since_admission")]
-    err8=any(dat.site[id.nomiss,"num_patients_ever_severe_since_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))
-    note8=dat.site[id.nomiss[which(dat.site[id.nomiss,"num_patients_ever_severe_since_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))],c("icd_code_3chars","num_patients_ever_severe_since_admission")]
+    err6=any(dat.site[id.nomiss,"num_patients_ever_severe_before_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))
+    note6=dat.site[id.nomiss[which(dat.site[id.nomiss,"num_patients_ever_severe_before_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))],c("icd_code_3chars","num_patients_ever_severe_since_admission")]
+    err7=any(dat.site[id.nomiss,"num_patients_ever_severe_since_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))
+    note7=dat.site[id.nomiss[which(dat.site[id.nomiss,"num_patients_ever_severe_since_admission"]>max(dat.site.dc[, "cumulative_patients_severe"]))],c("icd_code_3chars","num_patients_ever_severe_since_admission")]
     
-    err=c(err1, err2, err3, err4, err5, err6, err7, err8)
-    err.label[6]=paste0("ICD not in dictionary:", err6)
+    err=c(err1, err2, err3, err4, err5, err6, err7)
+
+    if(dim(note6)[1]!=0){
+        err.label[6]=paste0(paste(note6, collapse=";"), "")}
+    
     if(dim(note7)[1]!=0){
-        err.label[7]=paste0(paste(note7, collapse=";"), "")}
-    
-    if(dim(note8)[1]!=0){
-        err.label[8]=paste0(err.label[8],":",max(dat.site.dc[, "cumulative_patients_severe"])," vs. ", note8[2], "(", note8[1], ")")}
+        err.label[7]=paste0(err.label[7],":",max(dat.site.dc[, "cumulative_patients_severe"])," vs. ", note7[2], "(", note7[1], ")")}
     report=data.frame(site.nm, label=err.label, err)
     
     err.report=report[as.character(report[,"err"])%in%c(FALSE,"")!=1,c("site.nm", "label")]
