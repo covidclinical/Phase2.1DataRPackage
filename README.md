@@ -140,7 +140,7 @@ obfuscation_level=getObfuscation(currSiteId)
 ``` R
 devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage", subdir="FourCePhase2.1Data", upgrade=FALSE)
 ```
-3. Store the Phase1.1 data and Phase2.1 data in your Input directory ([YourPath]/Input). The list of .csv files is as follows:
+2. Store the Phase1.1 data and Phase2.1 data in your Input directory ([YourPath]/Input). The list of .csv files is as follows:
 ## Phase 1.1
 + Labs-[siteid].csv
 + Medications-[siteid].csv
@@ -156,7 +156,7 @@ devtools::install_github("https://github.com/covidclinical/Phase2.1DataRPackage"
 
 The above files are outputs Phase2.1SqlDataExtract (https://github.com/covidclinical/Phase2.1SqlDataExtraction). Make sure you have the correct file names. 
 
-4. Conduct QC. 
+3. Conduct QC. 
 ``` R
 library(FourCePhase2.1Data)
 currSiteId = "MGB" ## change to your [siteid]
@@ -164,13 +164,13 @@ dir.input="/Users/chuanhong/Documents/Input" ## change to [YourPath]/Input
 runQC_nodocker(currSiteId, dir.input)
 ```
 
-5. If the above steps have worked correctly, you should be able to see the following QC report in the [YourPath]/Input directory:
+4. If the above steps have worked correctly, you should be able to see the following QC report in the [YourPath]/Input directory:
 
 + Phase2.1QC_Report.doc
 
 **If there is any issue identified in Step 5, please fix the issue before going to next step.**
 
-6. Getting the raw Phase1.1 and Phase2.1 Data. In this step, the functions simply read in the csv files. If the column names were upper case in the original csv files, the functions change the column names to lower case. The list of data files is as follows:
+5. Getting the raw Phase1.1 and Phase2.1 Data. In this step, the functions simply read in the csv files. If the column names were upper case in the original csv files, the functions change the column names to lower case. The list of data files is as follows:
 
 + All Phase1.1 csv files
 + All Phase2.1 csv files
@@ -189,7 +189,7 @@ ClinicalCourse=getClinicalCourse_nodocker(currSiteId, dir.input
 
 ```
 
-7. Getting obfuscation level. In this step, the function returns the obfuscation level of a specific site. 
+6. Getting obfuscation level. In this step, the function returns the obfuscation level of a specific site. 
 ``` R
 obfuscation_level=getObfuscation(currSiteId)
 
