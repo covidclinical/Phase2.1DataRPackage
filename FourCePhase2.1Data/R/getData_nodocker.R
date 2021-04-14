@@ -38,7 +38,7 @@ getMedications_nodocker<- function(siteid,dir.input) {
   Medications
 }
 
-getDiagnoses_nodocker<- function(siteid.dir.input) {
+getDiagnoses_nodocker<- function(siteid,dir.input) {
   Diagnoses=read.csv(file.path(dir.input,paste0("Diagnoses-", siteid,".csv")))
   Diagnoses
 }
