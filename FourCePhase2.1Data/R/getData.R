@@ -45,6 +45,7 @@ getMedications<- function(siteid) {
 }
 
 getDiagnoses<- function(siteid) {
+  dir.input=getInputDataDirectoryName()
   Diagnoses=read.csv(paste0(dir.input,"/Diagnoses-", siteid,".csv"))
   Diagnoses
 }
