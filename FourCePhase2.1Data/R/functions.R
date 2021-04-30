@@ -125,10 +125,10 @@ runQC_tab_lab <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObserva
     nm1=paste0("p1.", nm)
     nm2=paste0("p2.", nm)
     nm.check=paste0("nm.diff.",nm)
-    range.LB=round(res[,nm2]-pmax(res[,nm2]*0.025,7),5)
+    range.LB=round(res[,nm2]-pmax(res[,nm2]*0.025,5),5)
     #range.LB=round(res[,nm2]-res[,nm2]*0.025,5)
     
-    range.UB=round(res[,nm2]+pmax(res[,nm2]*0.025,7),5)
+    range.UB=round(res[,nm2]+pmax(res[,nm2]*0.025,5),5)
     id.issue=which(round(res[,nm1],5)>range.UB|round(res[,nm1],5)<range.LB)
     tryCatch(sink.txt(paste0("Labs with Different ", nm, " between Phase1.1 and Phase2.1:\n"), file=file.nm2, cat, append=T), error=function(e) NA)
     if(length(id.issue)!=0){
@@ -174,8 +174,8 @@ runQC_tab_med <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObserva
     
     nm.check=paste0("nm.diff.",nm)
     
-    range.LB=pmin(res[,nm2.1]*0.975, res[,nm2.1]-7)
-    range.UB=pmax(res[,nm2.2]*1.025, res[,nm2.2]+7)
+    range.LB=pmin(res[,nm2.1]*0.975, res[,nm2.1]-5)
+    range.UB=pmax(res[,nm2.2]*1.025, res[,nm2.2]+5)
     
     id.issue=which(res[,nm1]<range.LB|res[,nm1]>range.UB)
     
@@ -219,8 +219,8 @@ runQC_tab_diag <- function(file.nm2, phase2.ClinicalCourse, phase2.PatientObserv
     nm2.2=paste0("p2.", nm,2)
     
     nm.check=paste0("nm.diff.",nm)
-    range.LB=pmin(res[,nm2.1]*0.975,res[,nm2.1]-7)
-    range.UB=pmax(res[,nm2.2]*1.025, res[,nm2.2]+7)
+    range.LB=pmin(res[,nm2.1]*0.975,res[,nm2.1]-5)
+    range.UB=pmax(res[,nm2.2]*1.025, res[,nm2.2]+5)
     id.issue=which(res[,nm1]<range.LB|res[,nm1]>range.UB)
 
     tryCatch(sink.txt(paste0("Diagnoses with Different ", nm, " between Phase1.1 and Phase2.1:"), file=file.nm2, cat, append=T), error=function(e) NA)
@@ -294,7 +294,7 @@ runQC_tab_cc <- function(file.nm2, phase2.ClinicalCourse, phase1.ClinicalCourse,
     nm1=paste0("p1.", nm)
     nm2=paste0("p2.", nm)
     nm.check=paste0("nm.diff.",nm)
-    nm.day0=(res[res$days_since_admission==0,nm1]<res[res$days_since_admission==0,nm2]-7) * (res[res$days_since_admission==0,nm1]>res[res$days_since_admission==0,nm2]+7)
+    nm.day0=(res[res$days_since_admission==0,nm1]<res[res$days_since_admission==0,nm2]-5) * (res[res$days_since_admission==0,nm1]>res[res$days_since_admission==0,nm2]+5)
     if(nm=="num_patients_all_still_in_hospital"){nm.print="total numbers of patient"}
     if(nm=="num_patients_ever_severe_still_in_hospital"){nm.print="total numbers of ever severe patient"}
     
