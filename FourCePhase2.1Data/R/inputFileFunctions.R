@@ -54,23 +54,31 @@ getSiteId <- function() {
     )
 
     siteId = NA
+    
+    # Compile errors into a list.
+    errors = list()
 
     ## for each file pattern we are supposed to match
     for (currFNamePattern in fNamePatterns) {
 
         ix = grep(pattern=currFNamePattern, x=fNames)
 
-        ## if no match, stop
+        # Note if we find no match.
         if (length(ix) == 0) {
-            stop("No match found for file name pattern: ", currFNamePattern)
+            errors[[currFNamePattern]] =
+                paste("No match found for file name pattern:", currFNamePattern)
+            next
         }
 
-        ## if multiple matches, stop
+        # Note if we find multiple matches
         if (length(ix) > 1) {
-            stop("Multiple matches found for file name pattern: ", currFNamePattern, ": ", paste(fNames[ix], collapse=", "))
+            errors[[currFNamePattern]] =
+                paste("Multiple matches found for file name pattern: ",
+                      currFNamePattern, ": ", paste(fNames[ix], collapse=", "))
+            next
         }
 
-        ## so we have exactly one match, make sure all files are named for the same site ID
+        # So we have exactly one match, make sure all files are named for the same site ID
         prefixSuffix = strsplit(x=currFNamePattern, split=".+\\", fixed=TRUE)[[1]]
         currSiteId = 
             gsub(
@@ -88,9 +96,17 @@ getSiteId <- function() {
         }
 
         if (siteId != currSiteId) {
-            stop("Files for multiple sites found in the input data directory: ", siteId, ", ", currSiteId)
+            errors[[currFNamePattern]] =
+                paste0("Files for multiple sites found in the input data directory: ",
+                       siteId, ", ", currSiteId)
         }
     }
-
+    
+    if (length(errors) > 0) {
+        cat("Error(s) found in getSiteId():\n")
+        cat(" *", paste(unname(errors), collapse = "\n * "), "\n")
+        stop("Could not complete getSiteId(). See https://github.com/covidclinical/Phase2.1DataRPackage for help.")
+    }
+    
     return(siteId)
 }
