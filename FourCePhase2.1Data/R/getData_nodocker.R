@@ -1,60 +1,86 @@
-
-#' Obtain the phase2.1 data
-#'
-#' @keywords 4CE Phase2 Project
+#' Import LocaLPatientClinicalCourse.csv
+#' 
+#' Uses [get4ceFile()] - see that file for additional customization.
+#' 
+#' @param siteid Name of your site.
+#' @param dir.input Input directory
+#' @param ... (Optional) Additional arguments passed to [get4ceFile()].
+#
+#' @seealso [get4ceFile()]
 #' @export
-
-getLocalPatientClinicalCourse_nodocker<- function(siteid, dir.input) {
-  LocalPatientClinicalCourse=read.csv(file.path(dir.input, "LocalPatientClinicalCourse.csv"))
-  colnames(LocalPatientClinicalCourse)=tolower(colnames(LocalPatientClinicalCourse))
-  LocalPatientClinicalCourse
+getLocalPatientClinicalCourse_nodocker <- function(siteid, dir.input, ...) {
+  get4ceFile("LocalPatientClinicalCourse.csv", dir.input, ...)
 }
 
-getLocalPatientObservations_nodocker<- function(siteid, dir.input) {
-  LocalPatientObservations=read.csv(file.path(dir.input, "LocalPatientObservations.csv"))
-  colnames(LocalPatientObservations)=tolower(colnames(LocalPatientObservations))
-  LocalPatientObservations
+
+#' Import LocaLPatientObservations.csv
+#' @inherit getLocalPatientClinicalCourse_nodocker
+#' @export
+getLocalPatientObservations_nodocker <- function(siteid, dir.input, ...) {
+  get4ceFile("LocalPatientObservations.csv", dir.input, ...)
 }
 
-getLocalPatientSummary_nodocker<- function(siteid, dir.input) {
-  LocalPatientSummary=read.csv(file.path(dir.input, "LocalPatientSummary.csv"))
-  colnames(LocalPatientSummary)=tolower(colnames(LocalPatientSummary))
-  LocalPatientSummary
+#' Import LocaLPatientSummary.csv
+#' @inherit getLocalPatientClinicalCourse_nodocker
+#' @export
+getLocalPatientSummary_nodocker <- function(siteid, dir.input, ...) {
+  get4ceFile("LocalPatientSummary.csv", dir.input, ...)
 }
 
-getLocalPatientMapping_nodocker<- function(siteid, dir.input) {
-  LocalPatientMapping=read.csv(file.path(dir.input, "LocalPatientMapping.csv"))
-  colnames(LocalPatientMapping)=tolower(colnames(LocalPatientMapping))
-  LocalPatientMapping
+#' Import LocaLPatientSummary.csv
+#' @inherit getLocalPatientClinicalCourse_nodocker
+#' @export
+getLocalPatientMapping_nodocker <- function(siteid, dir.input, ...) {
+  get4ceFile("LocalPatientMapping.csv", dir.input, ...)
 }
 
-getLabs_nodocker<- function(siteid,dir.input) {
-  Labs=read.csv(file.path(dir.input,paste0("Labs-", siteid,".csv")))
-  Labs
+#' Import Labs-yoursite.csv
+#' 
+#' Uses [get4ceFile()] - see that file for additional customization.
+#' 
+#' @param siteid Name of your site.
+#' @param dir.input Input directory
+#' @param ... (Optional) Additional arguments passed to [get4ceFile()].
+#
+#' @seealso [get4ceFile()]
+#' @export
+getLabs_nodocker <- function(siteid, dir.input, ...) {
+  get4ceFile(paste0("Labs-", siteid,".csv"), dir.input, tolower = FALSE, ...)
 }
 
-getMedications_nodocker<- function(siteid,dir.input) {
-  Medications=read.csv(file.path(dir.input,paste0("Medications-", siteid,".csv")))
-  Medications
+
+#' Import Medications-yoursite.csv
+#' @inherit getLabs_nodocker
+#' @export
+getMedications_nodocker <- function(siteid, dir.input, ...) {
+  get4ceFile(paste0("Medications-", siteid,".csv"), dir.input, tolower = FALSE, ...)
 }
 
-getDiagnoses_nodocker<- function(siteid,dir.input) {
-  Diagnoses=read.csv(file.path(dir.input,paste0("Diagnoses-", siteid,".csv")))
-  Diagnoses
+#' Import Diagnoses-yoursite.csv
+#' @inherit getLabs_nodocker
+#' @export
+getDiagnoses_nodocker <- function(siteid, dir.input, ...) {
+  get4ceFile(paste0("Diagnoses-", siteid,".csv"), dir.input, tolower = FALSE, ...)
 }
 
-getDemographics_nodocker<- function(siteid,dir.input) {
-  Demographics=read.csv(file.path(dir.input,paste0("Demographics-", siteid,".csv")))
-  Demographics
+#' Import Demographics-yoursite.csv
+#' @inherit getLabs_nodocker
+#' @export
+getDemographics_nodocker <- function(siteid, dir.input, ...) {
+  get4ceFile(paste0("Demographics-", siteid,".csv"), dir.input, tolower = FALSE, ...)
 }
 
-getDailyCounts_nodocker<- function(siteid,dir.input) {
-  DailyCounts=read.csv(file.path(dir.input,paste0("DailyCounts-", siteid,".csv")))
-  DailyCounts
+#' Import DailyCounts-yoursite.csv
+#' @inherit getLabs_nodocker
+#' @export
+getDailyCounts_nodocker <- function(siteid, dir.input, ...) {
+  get4ceFile(paste0("DailyCounts-", siteid,".csv"), dir.input, tolower = FALSE, ...)
 }
 
-getClinicalCourse_nodocker<- function(siteid,dir.input) {
-  ClinicalCourse=read.csv(file.path(dir.input,paste0("ClinicalCourse-", siteid,".csv")))
-  ClinicalCourse
+#' Import ClinicalCourse-yoursite.csv
+#' @inherit getLabs_nodocker
+#' @export
+getClinicalCourse_nodocker <- function(siteid, dir.input, ...) {
+  get4ceFile(paste0("ClinicalCourse-", siteid,".csv"), dir.input, tolower = FALSE, ...)
 }
 

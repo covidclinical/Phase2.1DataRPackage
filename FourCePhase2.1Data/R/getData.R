@@ -1,70 +1,123 @@
 
-#' Obtain the phase2.1 data
+#' Import a 4CE CSV file
+#' 
+#' Files are loaded from the input data directory, optionally using [data.table::fread()].
+#' 
+#' @param filename Name of the file, such as LocalPatientSummary.csv
+#' @param dir.input Input directory, which is via [getInputDataDirectoryName()]
+#'   if using docker.
+#' @param fread if TRUE, use data.table::fread() for faster import. Otherwise
+#'   use read.csv(). This will also check the 4ce.fread option to make it work
+#'   without passing a function argument.
+#' @param tolower Lowercase column names? (default: yes)
+#' @param ... (Optional) Additional arguments passed through to fread() or
+#'   read.csv()
 #'
-#' @keywords 4CE Phase2 Project
+#' @seealso [data.table::fread()], [utils::read.csv()]
+#' 
 #' @export
-
-getLocalPatientClinicalCourse<- function(siteid) {
-  dir.input=getInputDataDirectoryName()
-  LocalPatientClinicalCourse=read.csv(paste0(dir.input, "/LocalPatientClinicalCourse.csv"))
-  colnames(LocalPatientClinicalCourse)=tolower(colnames(LocalPatientClinicalCourse))
-  LocalPatientClinicalCourse
+#' @importFrom utils read.csv
+get4ceFile <-
+  function(filename,
+           dir.input = getInputDataDirectoryName(),
+           fread = getOption("4ce.fread", FALSE),
+           tolower = TRUE,
+           ...) {
+  
+  filepath = file.path(dir.input, filename)
+  
+  if (fread) {
+    df = data.table::fread(filepath, data.table = FALSE, ...)
+  } else {
+    df = read.csv(filepath, ...)
+  }
+  
+  if (tolower) {
+    colnames(df) = tolower(colnames(df))
+  }
+  
+  return(df)
 }
 
-getLocalPatientObservations<- function(siteid) {
-  dir.input=getInputDataDirectoryName()
-  LocalPatientObservations=read.csv(paste0(dir.input, "/LocalPatientObservations.csv"))
-  colnames(LocalPatientObservations)=tolower(colnames(LocalPatientObservations))
-  LocalPatientObservations
+#' Import LocalPatientClinicalCourse.csv
+#' 
+#' Uses [get4ceFile()] - see that file for additional customization.
+#' 
+#' @param siteid (unused)
+#' @param ... (Optional) Additional arguments passed to [get4ceFile()].
+#'   
+#' @seealso [get4ceFile()]
+#' @export
+getLocalPatientClinicalCourse <- function(siteid = NULL, ...) {
+  get4ceFile("LocalPatientClinicalCourse.csv", ...)
 }
 
-getLocalPatientSummary<- function(siteid) {
-  dir.input=getInputDataDirectoryName()
-  LocalPatientSummary=read.csv(paste0(dir.input, "/LocalPatientSummary.csv"))
-  colnames(LocalPatientSummary)=tolower(colnames(LocalPatientSummary))
-  LocalPatientSummary
+#' Import LocalPatientObservations.csv
+#' @inherit getLocalPatientClinicalCourse
+#' @export
+getLocalPatientObservations <- function(siteid = NULL, ...) {
+  get4ceFile("LocalPatientObservations.csv", ...)
 }
 
-getLocalPatientMapping<- function(siteid) {
-  dir.input=getInputDataDirectoryName()
-  LocalPatientMapping=read.csv(paste0(dir.input, "/LocalPatientMapping.csv"))
-  colnames(LocalPatientMapping)=tolower(colnames(LocalPatientMapping))
-  LocalPatientMapping
+#' Import LocalPatientSummary.csv
+#' @inherit getLocalPatientClinicalCourse
+#' @export
+getLocalPatientSummary <- function(siteid = NULL, ...) {
+  get4ceFile("LocalPatientSummary.csv", ...)
 }
 
-getLabs<- function(siteid) {
-  dir.input=getInputDataDirectoryName()
-  Labs=read.csv(paste0(dir.input,"/Labs-", siteid,".csv"))
-  Labs
+#' Import LocalPatientMapping.csv
+#' @inherit getLocalPatientClinicalCourse
+#' @export
+getLocalPatientMapping<- function(siteid = NULL, ...) {
+  get4ceFile("LocalPatientMapping.csv", ...)
 }
 
-getMedications<- function(siteid) {
-  dir.input=getInputDataDirectoryName()
-  Medications=read.csv(paste0(dir.input,"/Medications-", siteid,".csv"))
-  Medications
+#' Import Labs-yoursite.csv
+#' 
+#' Uses [get4ceFile()] - see that file for additional customization.
+#' 
+#' @param siteid Name of your site.
+#' @param ... (Optional) Additional arguments passed to [get4ceFile()].
+#
+#' @seealso [get4ceFile()]
+#' @export
+getLabs<- function(siteid, ...) {
+  get4ceFile(paste0("Labs-", siteid, ".csv"), tolower = FALSE, ...)
 }
 
-getDiagnoses<- function(siteid) {
-  dir.input=getInputDataDirectoryName()
-  Diagnoses=read.csv(paste0(dir.input,"/Diagnoses-", siteid,".csv"))
-  Diagnoses
+#' Import Medications-yoursite.csv
+#' @inherit getLabs
+#' @export
+getMedications<- function(siteid, ...) {
+  get4ceFile(paste0("Medications-", siteid, ".csv"), tolower = FALSE, ...)
 }
 
-getDemographics<- function(siteid) {
-  dir.input=getInputDataDirectoryName()
-  Demographics=read.csv(paste0(dir.input,"/Demographics-", siteid,".csv"))
-  Demographics
+#' Import Diagnoses-yoursite.csv
+#' @inheritParams getLabs
+#' @export
+getDiagnoses<- function(siteid, ...) {
+  get4ceFile(paste0("Diagnoses-", siteid, ".csv"), tolower = FALSE, ...)
 }
 
-getDailyCounts<- function(siteid) {
-  dir.input=getInputDataDirectoryName()
-  DailyCounts=read.csv(paste0(dir.input,"/DailyCounts-", siteid,".csv"))
-  DailyCounts
+#' Import Demographics-yoursite.csv
+#' @inheritParams getLabs
+#' @export
+getDemographics<- function(siteid, ...) {
+  get4ceFile(paste0("Demographics-", siteid, ".csv"), tolower = FALSE, ...)
 }
 
-getClinicalCourse<- function(siteid) {
-  dir.input=getInputDataDirectoryName()
-  ClinicalCourse=read.csv(paste0(dir.input,"/ClinicalCourse-", siteid,".csv"))
-  ClinicalCourse
+#' Import DailyCounts-yoursite.csv
+#' @inheritParams getLabs
+#' @export
+getDailyCounts<- function(siteid, ...) {
+  get4ceFile(paste0("DailyCounts-", siteid, ".csv"), tolower = FALSE, ...)
+}
+
+#' Import ClinicalCourse-yoursite.csv
+#' @inheritParams getLabs
+#' @export
+getClinicalCourse<- function(siteid, ...) {
+  get4ceFile(paste0("ClinicalCourse-", siteid, ".csv"), tolower = FALSE, ...)
 }
 
